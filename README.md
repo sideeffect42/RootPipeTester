@@ -130,7 +130,8 @@ If a preference pane in System Preferences needs to do operations that have to b
 So far so good, but what is this `system.preferences`?
 The rights Apple uses and how they are configured changed over time, but the principle stayed the same. Below you see an excerpt of the Authorization Services Policy Database.
 
-``` system.preferences on 10.5.8
+system.preferences on 10.5.8
+``` 
 {
     "allow-root" = 1;
     class = user;
