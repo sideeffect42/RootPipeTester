@@ -8,8 +8,8 @@
 		<string key="IBDocument.HIToolboxVersion">353.00</string>
 		<object class="NSMutableArray" key="IBDocument.EditedObjectIDs">
 			<bool key="EncodedWithXMLCoder">YES</bool>
-			<integer value="111"/>
 			<integer value="372"/>
+			<integer value="111"/>
 		</object>
 		<object class="NSArray" key="IBDocument.PluginDependencies">
 			<bool key="EncodedWithXMLCoder">YES</bool>
@@ -358,7 +358,7 @@
 			<object class="NSWindowTemplate" id="972006081">
 				<int key="NSWindowStyleMask">15</int>
 				<int key="NSWindowBacking">2</int>
-				<string key="NSWindowRect">{{335, 479}, {573, 271}}</string>
+				<string key="NSWindowRect">{{335, 366}, {563, 384}}</string>
 				<int key="NSWTFlags">1946157056</int>
 				<string key="NSWindowTitle">RootPipe Tester</string>
 				<string key="NSWindowClass">NSWindow</string>
@@ -382,7 +382,7 @@
 										<object class="NSTextView" id="566166147">
 											<reference key="NSNextResponder" ref="357291482"/>
 											<int key="NSvFlags">2322</int>
-											<string key="NSFrameSize">{516, 14}</string>
+											<string key="NSFrameSize">{548, 14}</string>
 											<reference key="NSSuperview" ref="357291482"/>
 											<object class="NSTextContainer" key="NSTextContainer" id="787019209">
 												<object class="NSLayoutManager" key="NSLayoutManager">
@@ -400,7 +400,7 @@
 													<nil key="NSDelegate"/>
 												</object>
 												<reference key="NSTextView" ref="566166147"/>
-												<double key="NSWidth">5.160000e+02</double>
+												<double key="NSWidth">5.480000e+02</double>
 												<int key="NSTCFlags">1</int>
 											</object>
 											<object class="NSTextViewSharedData" key="NSSharedData">
@@ -459,12 +459,12 @@
 												<nil key="NSDefaultParagraphStyle"/>
 											</object>
 											<int key="NSTVFlags">6</int>
-											<string key="NSMaxSize">{1049, 1e+07}</string>
+											<string key="NSMaxSize">{1133, 1e+07}</string>
 											<string key="NSMinize">{223, 0}</string>
 											<nil key="NSDelegate"/>
 										</object>
 									</object>
-									<string key="NSFrame">{{1, 1}, {516, 229}}</string>
+									<string key="NSFrame">{{1, 1}, {548, 384}}</string>
 									<reference key="NSSuperview" ref="352234044"/>
 									<reference key="NSNextKeyView" ref="566166147"/>
 									<reference key="NSDocView" ref="566166147"/>
@@ -478,7 +478,7 @@
 								<object class="NSScroller" id="67965562">
 									<reference key="NSNextResponder" ref="352234044"/>
 									<int key="NSvFlags">256</int>
-									<string key="NSFrame">{{517, 1}, {15, 229}}</string>
+									<string key="NSFrame">{{549, 1}, {15, 369}}</string>
 									<reference key="NSSuperview" ref="352234044"/>
 									<reference key="NSTarget" ref="352234044"/>
 									<string key="NSAction">_doScroller:</string>
@@ -496,7 +496,7 @@
 									<double key="NSPercent">9.456522e-01</double>
 								</object>
 							</object>
-							<string key="NSFrame">{{20, 20}, {533, 231}}</string>
+							<string key="NSFrame">{{-1, -1}, {565, 386}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<reference key="NSNextKeyView" ref="357291482"/>
 							<int key="NSsFlags">18</int>
@@ -507,7 +507,7 @@
 						<object class="NSButton" id="207017053">
 							<reference key="NSNextResponder" ref="439893737"/>
 							<int key="NSvFlags">303</int>
-							<string key="NSFrame">{{236, 117}, {101, 32}}</string>
+							<string key="NSFrame">{{232, 172}, {99, 32}}</string>
 							<reference key="NSSuperview" ref="439893737"/>
 							<bool key="NSEnabled">YES</bool>
 							<object class="NSButtonCell" key="NSCell" id="475983885">
@@ -529,7 +529,7 @@
 							</object>
 						</object>
 					</object>
-					<string key="NSFrameSize">{573, 271}</string>
+					<string key="NSFrameSize">{563, 384}</string>
 					<reference key="NSSuperview"/>
 				</object>
 				<string key="NSScreenRect">{{0, 0}, {1440, 878}}</string>
@@ -1249,8 +1249,8 @@
 					<reference ref="9"/>
 					<string>{74, 862}</string>
 					<string>{{6, 978}, {478, 20}}</string>
-					<string>{{449, 539}, {573, 271}}</string>
-					<string>{{449, 539}, {573, 271}}</string>
+					<string>{{230, 426}, {563, 384}}</string>
+					<string>{{230, 426}, {563, 384}}</string>
 					<reference ref="9"/>
 					<string>{{33, 99}, {480, 360}}</string>
 					<string>{3.40282e+38, 3.40282e+38}</string>
