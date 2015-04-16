@@ -27,31 +27,41 @@ To some extent this is also a privilege escalation, because the admin group does
 ### OS X 10.10 (Yosemite)
 Upgrade to 10.10.3 as soon as possible to make sure the system enforces entitlements on the `writeconfig` binary correctly. (at least that's what Apple says)
 
-If for some reason you cannot upgrade to 10.10.3, try to apply the same steps as for OS X 10.9 Mavericks.
-
+If for some reason you cannot upgrade to 10.10.3, check the section for OS X 10.9 Mavericks.
 
 ### OS X 10.9 (Mavericks)
-Coming soon…
+Mavericks let's an exploiter get through with nil authorization so you're in a much more difficult situation than with older versions of Mac OS X.  
+
+
+You may want to have a look at [can\_I\_suid](https://github.com/gdbinit/can_I_suid).
+
+Test results:
+
+#### nil authorization:  
+Vulnerable  
+#### user authorization:  
+- __Administrator account__: Vulnerable only if “Require password to unlock each System Preferences pane” is not checked.  
+- __Standard user account__: Not vulnerable
 
 
 ### OS X 10.8 (Mountain Lion)
-Coming soon…
-
-
-### OS X 10.7 (Lion)
+You should enable "Require password to unlock each System Preferences pane" in the Security preference pane.
 
 Test results:
 
 #### nil authorization:  
 Not vulnerable  
 #### user authorization:  
-- __Administrator account__: Vulnerable only if _both_ "Require password" is unchecked and secure preference panes are unlocked.  
+- __Administrator account__: Vulnerable only if “Require password to unlock each System Preferences pane” is not checked.  
 - __Standard user account__: Not vulnerable
 
 
-### Mac OS X 10.6 (Snow Leopard), Mac OS X 10.5 (Leopard), Mac OS X 10.4 (Tiger)
-On these systems, the "Require password to unlock each System Preference pane" ("Require password to unlock each secure system preference" in Tiger) in the Security preference pane is working properly and _should really be enabled_!  
-If the "Require password" checkbox is unchecked, the system will unlock secure preference panes on _each_ login. If you're using an Administrator account this will make your system vulnerable until you have manually closed the lock in the System Preferences after each login.
+### OS X 10.7 (Lion), Mac OS X 10.6 (Snow Leopard), Mac OS X 10.5 (Leopard), Mac OS X 10.4 (Tiger)
+Congratulations! You have one of the most secure versions of Mac OS X (at least as far as RootPipe is concerned).
+
+On these systems, the "Require password to unlock each System Preference pane" ("Require password to unlock each secure system preference" in Tiger) in the Security preference pane is working properly and _should really be enabled_!
+
+Note: If the "Require password" checkbox is unchecked, the system will unlock secure preference panes on _each_ login. If you're using an Administrator account this will make your system vulnerable until you have manually closed the lock in the System Preferences after each login.
 
 Test results:
 
@@ -98,10 +108,12 @@ Not vulnerable
 
 
 ### Mac OS X 10.1 (Puma), Mac OS X 10.0 (Cheetah)
-These systems have not been tested (RootPipe Tester doesn't run on them either) and if you're still using them you'll probably have bigger problems than RootPipe.  
+An exploit for Puma seems feasible, because it uses the same steps to authenticate System Preferences and most of the necessary components are there.
+The only thing hindering an exploit is that Puma does not have `SecurityFoundation.framework` which is used on later versions to authorize.
+Instead it uses a PrivateFramework called `NIInterface.framework` which needs to be reverse engineered first.
 
-Good news anyway: Most software for the Mac is written in C and compiling a binary that'll run on Puma on a modern system is so hard that noone's gonna bother.
-
+Good news anyway: Nobody is going to invest time into exploiting a probably next to nothing user base.  
+To enhance security only using a Standard user account _and_ manually locking secure preference panes is still recommended.
 
 
 ## About RootPipe
