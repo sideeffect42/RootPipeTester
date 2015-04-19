@@ -104,7 +104,7 @@ static NSMutableArray *usedTempFiles = nil;
 	if ([notification name] == RootPipeTestStarted) {
 		if (!defaultWindowTitle) defaultWindowTitle = [[mainWindow title] retain];
 		
-		[mainWindow setTitle:[defaultWindowTitle stringByAppendingString:@" - Running…"]];
+		[mainWindow setTitle:[defaultWindowTitle stringByAppendingString:@" - Running\u2026"]];
 	} else if ([notification name] == RootPipeTestFinished) {
 		[mainWindow setTitle:defaultWindowTitle];
 	}
@@ -217,7 +217,7 @@ static NSMutableArray *usedTempFiles = nil;
 	if([self testFileExists]) printf("The file \"%s\" already exists. This might have an effect on the test result!\n", [FILE_PATH UTF8String]);
 	
 	// Get Tool
-	printf("Trying to get tool…\n");
+	printf("Trying to get tool\u2026\n");
 	id tool = [self getTool:useAuth];
 	if ([tool respondsToSelector:@selector(description)] || tool == nil) {
 		printf("Tool is: %s\n", [[tool description] UTF8String]);
@@ -230,7 +230,7 @@ static NSMutableArray *usedTempFiles = nil;
 	BOOL createResult = [tool createFileWithContents:FILE_CONTENTS 
 												path:FILE_PATH 
 										  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-													  [NSNumber numberWithUnsignedShort /* maybe unsigned long should be used here... */ :04777], NSFilePosixPermissions, 
+													  [NSNumber numberWithUnsignedShort /* maybe unsigned long should be used here… */ :04777], NSFilePosixPermissions, 
 													  @"root", NSFileOwnerAccountName, 
 													  @"wheel", NSFileGroupOwnerAccountName, 
 													  nil
@@ -238,7 +238,7 @@ static NSMutableArray *usedTempFiles = nil;
 						 ];
 	
 	if (!createResult) {
-		printf("The tool indicates that writing the file \"%s\" failed.", FILE_PATH);
+		printf("The tool indicates that writing the file \"%s\" failed.\n", [FILE_PATH UTF8String]);
 	}
 	
 	// Check if it worked
@@ -301,18 +301,16 @@ static NSMutableArray *usedTempFiles = nil;
 	int oldStdOut = dup(fileno(stdout)); // make a copy of the old outs to restore later
 	int oldStdErr = dup(fileno(stderr));
 	
-	setvbuf(stdout, NULL, _IOLBF /* Line Buffering */, BUFSIZ);
-	setvbuf(stderr, NULL, _IOLBF /* Line Buffering */, BUFSIZ);
+	setvbuf(stdout, NULL, _IONBF /* No Buffering */, BUFSIZ);
+	setvbuf(stderr, NULL, _IONBF /* No Buffering */, BUFSIZ);
 	
 	NSPipe *pipe = [NSPipe pipe];
 	NSFileHandle *pipeHandle = [pipe fileHandleForReading];
 	dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stdout)); // redirect stdout to pipe
 	dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stderr)); // redirect stderr to pipe
-	[[NSNotificationCenter defaultCenter] addObserver:self 
-											 selector:@selector(updateTextField:) 
-												 name:NSFileHandleReadCompletionNotification 
-											   object:pipeHandle];
-	[pipeHandle readInBackgroundAndNotify];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextField:) name:NSFileHandleReadCompletionNotification object:pipeHandle];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextField:) name:NSFileHandleDataAvailableNotification object:pipeHandle];
+	[pipeHandle waitForDataInBackgroundAndNotify];
 	
 	// Acquire information about this user's system (mostly for "debugging")
 	printf("Running tests as user: %s\n", [NSUserName() UTF8String]);
@@ -331,12 +329,12 @@ static NSMutableArray *usedTempFiles = nil;
 	// [nil auth]
 	BOOL vulnerableWithoutAuth = [self runTestWithAuthorization:NO fileAttributes:&fileAttributes]; // nil auth test
 	if (vulnerableWithoutAuth) {
-		printf("Your system is vulnerable with nil authorization! (probably 10.9.0 - 10.10.2)\n");
+		printf("\nYour system is vulnerable with nil authorization! (probably 10.9.0 - 10.10.2)\n");
 	} else {
-		printf("Your system is not vulnerable with nil authorization. (probably 10.8 or older)\n");
+		printf("\nYour system is not vulnerable with nil authorization. (probably 10.8 or older)\n");
 	}
 	if (fileAttributes) {
-		printf("File attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
+		printf("\nFile attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
 	}
 	// [/nil auth]
 	
@@ -346,12 +344,12 @@ static NSMutableArray *usedTempFiles = nil;
 	// [user auth]
 	BOOL vulnerableWithAuth = [self runTestWithAuthorization:YES fileAttributes:&fileAttributes]; // user auth test
 	if (vulnerableWithAuth) {
-		printf("Your system is vulnerable with user authorization. Are you a \"Standard User\" or did you enter your password?\n");
+		printf("\nYour system is vulnerable with user authorization. Are you a \"Standard User\" or did you enter your password?\n");
 	} else {
-		printf("Your system is not vulnerable using user authorization.\n");
+		printf("\nYour system is not vulnerable using user authorization.\n");
 	}
 	if (fileAttributes) {
-		printf("File attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
+		printf("\nFile attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
 	}
 	// [/user auth]
 	
@@ -368,16 +366,8 @@ static NSMutableArray *usedTempFiles = nil;
 	close(oldStdErr);
 	
 	// Make sure that all the contents of the redirected "test buffers" are in the TextView
-	[[NSNotificationCenter defaultCenter] postNotification:
-	 [NSNotification notificationWithName:NSFileHandleReadCompletionNotification 
-								   object:pipeHandle 
-								 userInfo:[NSDictionary dictionaryWithObjectsAndKeys:
-										   [pipeHandle availableData], NSFileHandleNotificationDataItem, 
-										   [NSNumber numberWithInt:0], @"NSFileHandleError", 
-										   nil
-										   ]
-	  ]
-	 ];
+	[NSThread detachNewThreadSelector:@selector(postNotification:) toTarget:[NSNotificationCenter defaultCenter] withObject:[NSNotification notificationWithName:NSFileHandleDataAvailableNotification object:pipeHandle]];
+	
 	
 	// Test finished
 	[[NSNotificationCenter defaultCenter] postNotificationName:RootPipeTestFinished object:NSApp];
@@ -386,18 +376,40 @@ static NSMutableArray *usedTempFiles = nil;
 }
 
 - (void)updateTextField:(NSNotification *)notification {
-	[[notification object] readInBackgroundAndNotify];
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	
-	NSData *data = (NSData *)[(NSDictionary *)[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
+	NSData *data;
+	@try {
+		if ([[notification name] isEqualToString:NSFileHandleReadCompletionNotification]) {
+			[[notification object] readInBackgroundAndNotify];
+			data = (NSData *)[(NSDictionary *)[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
+		} else if ([[notification name] isEqualToString:NSFileHandleDataAvailableNotification]) {
+			[[notification object] waitForDataInBackgroundAndNotify];
+			data = [[notification object] availableData];
+		} else return;
+	}
+	@catch (NSException *e) {
+		return;
+	}
+	
+	NSAttributedString *attributedString = [[NSAttributedString alloc] autorelease];
 	NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
 	
-	if ([str length] < 1) return; // nothing to fill into TextView
+	if (!str && [data length] > 0) {
+		// Try reading as ASCII. Better than nothing I guess
+		[str release];
+		str = [[NSString alloc] initWithData:data encoding:NSASCIIStringEncoding];
+	}
 	
-	NSAttributedString *attributedString = [[[NSAttributedString alloc] initWithString:str] autorelease];
+	[attributedString initWithString:str];
+	[str release];	
+	
+	if ([attributedString length] < 1) return; // nothing to fill into TextView
+	
 	// Asynchronously update TextView on the GUI thread.
 	[[textOutput textStorage] performSelectorOnMainThread:@selector(appendAttributedString:) withObject:attributedString waitUntilDone:NO];
 	
-	[str release];
+	[pool release];
 }
 
 - (void)cleanUpTempFilesArray {
@@ -434,7 +446,7 @@ static NSMutableArray *usedTempFiles = nil;
 			// Delete our testing file
 			deleteSuccess = [[NSFileManager defaultManager] removeFileAtPath:FILE_PATH handler:nil];
 			if (!deleteSuccess && (tool = [self getTool]) && isLeopardOrHigher) {
-				// Let's try and use RootPipe to delete the file...
+				// Let's try and use RootPipe to delete the file…
 				deleteSuccess = [tool removeFileAtPath:FILE_PATH];
 				if (!deleteSuccess) { NSLog(@"Clean up failed even using RootPipe."); }
 			}
