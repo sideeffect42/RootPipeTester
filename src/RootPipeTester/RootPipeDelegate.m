@@ -309,7 +309,8 @@ static NSMutableArray *usedTempFiles = nil;
 	dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stdout)); // redirect stdout to pipe
 	dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stderr)); // redirect stderr to pipe
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextField:) name:NSFileHandleReadCompletionNotification object:pipeHandle];
-	[pipeHandle readInBackgroundAndNotify];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextField:) name:NSFileHandleDataAvailableNotification object:pipeHandle];
+	[pipeHandle waitForDataInBackgroundAndNotify];
 	
 	// Acquire information about this user's system (mostly for "debugging")
 	printf("Running tests as user: %s\n", [NSUserName() UTF8String]);
@@ -365,7 +366,8 @@ static NSMutableArray *usedTempFiles = nil;
 	close(oldStdErr);
 	
 	// Make sure that all the contents of the redirected "test buffers" are in the TextView
-	[[NSNotificationCenter defaultCenter] postNotificationName:NSFileHandleReadCompletionNotification object:pipeHandle userInfo:[NSDictionary dictionaryWithObjectsAndKeys:[pipeHandle readDataToEndOfFile], NSFileHandleNotificationDataItem, [NSNumber numberWithInt:0], @"NSFileHandleError", nil]];
+	[NSThread detachNewThreadSelector:@selector(postNotification:) toTarget:[NSNotificationCenter defaultCenter] withObject:[NSNotification notificationWithName:NSFileHandleDataAvailableNotification object:pipeHandle]];
+	
 	
 	// Test finished
 	[[NSNotificationCenter defaultCenter] postNotificationName:RootPipeTestFinished object:NSApp];
@@ -374,11 +376,16 @@ static NSMutableArray *usedTempFiles = nil;
 }
 
 - (void)updateTextField:(NSNotification *)notification {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	
 	NSData *data;
 	@try {
 		if ([[notification name] isEqualToString:NSFileHandleReadCompletionNotification]) {
 			[[notification object] readInBackgroundAndNotify];
 			data = (NSData *)[(NSDictionary *)[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
+		} else if ([[notification name] isEqualToString:NSFileHandleDataAvailableNotification]) {
+			[[notification object] waitForDataInBackgroundAndNotify];
+			data = [[notification object] availableData];
 		} else return;
 	}
 	@catch (NSException *e) {
@@ -401,6 +408,8 @@ static NSMutableArray *usedTempFiles = nil;
 	
 	// Asynchronously update TextView on the GUI thread.
 	[[textOutput textStorage] performSelectorOnMainThread:@selector(appendAttributedString:) withObject:attributedString waitUntilDone:NO];
+	
+	[pool release];
 }
 
 - (void)cleanUpTempFilesArray {
