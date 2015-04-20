@@ -1,10 +1,10 @@
 //
-//  RootPipeDelegate.h
+//  RootPipeTest.h
 //  RootPipeTester
 //
-//  Created by Takashi Yoshi on 11.04.2015.
+//  Created by Takashi Yoshi on 20.04.15.
 //  Copyright 2015 Takashi Yoshi.
-//  
+//
 //  
 //  This program is free software: you can redistribute it and/or modify
 //  it under the terms of the GNU General Public License as published by
@@ -20,19 +20,24 @@
 //  along with this program.  If not, see <http://www.gnu.org/licenses/>.
 //
 
-#include <unistd.h>
 #import <Cocoa/Cocoa.h>
-#import "RootPipeTest.h"
+#import "RootPipeExploit.h"
 
-@interface RootPipeDelegate : NSObject {
-    IBOutlet NSWindow *mainWindow;
-	IBOutlet NSButton *startButton;
-    IBOutlet NSTextView *textOutput;
+extern NSString * const RootPipeTestStarted;
+extern NSString * const RootPipeTestFinished;
+
+@interface RootPipeTest : NSObject {
+	NSLock *_testFilesLock;
+	NSMutableSet *_usedTestFiles;
 	
-	RootPipeTest *_rpTest;
 }
 
-- (IBAction)startTest:(NSButton *)sender;
-- (void)initiateAutomatedTesting;
+- (BOOL)runTestWithAuthorization:(BOOL)useAuth; // returns if vulnerable
+- (BOOL)runTestWithAuthorization:(BOOL)useAuth fileAttributes:(NSDictionary **)fileAttr; // also returns the attributes of the written file
+
+- (NSSet *)usedTestFiles;
+- (NSSet *)leftoverTestFiles; // returns a list of test files which still exist on the file system
+- (BOOL)hasLeftoverTestFiles;
+- (void)cleanUp; // will remove the /private/tmp files this application creates
 
 @end
