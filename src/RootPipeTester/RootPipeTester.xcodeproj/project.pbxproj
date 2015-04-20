@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
+		8210D4141AE4FA4A0074CDBE /* RootPipeExploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */; };
 		82B6ED361AD90AD600BFBAA2 /* Admin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B6ED351AD90AD600BFBAA2 /* Admin.framework */; };
 		82B6ED391AD90AE500BFBAA2 /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */; };
 		82B6EDD61AD91DC800BFBAA2 /* RootPipeDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */; };
@@ -26,6 +27,8 @@
 		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
 		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
 		32CA4F630368D1EE00C91783 /* RootPipeTester_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootPipeTester_Prefix.pch; sourceTree = "<group>"; };
+		8210D4121AE4FA4A0074CDBE /* RootPipeExploit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootPipeExploit.h; sourceTree = "<group>"; };
+		8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeExploit.m; sourceTree = "<group>"; };
 		82B6ECED1AD903CA00BFBAA2 /* RootPipeDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootPipeDelegate.h; sourceTree = "<group>"; };
 		82B6ED351AD90AD600BFBAA2 /* Admin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Admin.framework; path = /System/Library/PrivateFrameworks/Admin.framework; sourceTree = "<absolute>"; };
 		82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = /System/Library/Frameworks/SecurityFoundation.framework; sourceTree = "<absolute>"; };
@@ -52,8 +55,10 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */,
 				82B6ECED1AD903CA00BFBAA2 /* RootPipeDelegate.h */,
+				82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */,
+				8210D4121AE4FA4A0074CDBE /* RootPipeExploit.h */,
+				8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -188,6 +193,7 @@
 			files = (
 				8D11072D0486CEB800E47090 /* main.m in Sources */,
 				82B6EDD61AD91DC800BFBAA2 /* RootPipeDelegate.m in Sources */,
+				8210D4141AE4FA4A0074CDBE /* RootPipeExploit.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
