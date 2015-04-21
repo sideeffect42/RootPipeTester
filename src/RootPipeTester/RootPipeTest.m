@@ -121,6 +121,8 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 		printf("The tool indicates that writing the file \"%s\" failed.\n", testFileStr);
 	}
 	
+	usleep((useAuth ? 5000 : 2500)); //fixes false negatives on 10.9 --> https://github.com/sideeffect42/RootPipeTester/issues/1 ; TODO test 10.10
+	
 	// Check if it worked
 	NSFileManager *fm = [NSFileManager defaultManager];
 	
@@ -129,7 +131,7 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 		printf("File at \"%s\" does not exist.\n", testFileStr);
 		return NO; 
 	} else {
-		printf("File at \"%s\" exists.\n", testFileStr);
+		printf("%sile at \"%s\" exists.\n", (createResult?"F":"But f"), testFileStr);
 	}
 	
 	NSData *writtenFileContent = [fm contentsAtPath:testFile];
@@ -140,7 +142,17 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 		printf("The contents of the file match what we tried to write.\n");
 	}
 	
-	NSDictionary *writtenFileAttributes = [fm fileAttributesAtPath:testFile traverseLink:YES]; // need to traverse link because on some systems /tmp is /private/tmp
+	NSDictionary *writtenFileAttributes = nil;
+	if ([fm respondsToSelector:@selector(attributesOfItemAtPath:error:)]) {
+		NSError *error = nil;
+		writtenFileAttributes = [fm attributesOfItemAtPath:[testFile stringByResolvingSymlinksInPath] error:&error];
+		if (error) {
+			printf("Could not read file attributes.\n");
+			return NO;
+		}
+	} else {
+		writtenFileAttributes = [fm fileAttributesAtPath:testFile traverseLink:YES];
+	}
 	
 	// "Export" file attributes
 	if (fileAttr) {
@@ -210,7 +222,12 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 	while ((file = [enumerator nextObject])) {
 		if ([fm fileExistsAtPath:file]) {
 			// Delete our testing file
-			deleteSuccess = [[NSFileManager defaultManager] removeFileAtPath:file handler:nil];
+			deleteSuccess = NO;
+			if ([fm respondsToSelector:@selector(removeItemAtPath:error:)]) {
+				deleteSuccess = [fm removeItemAtPath:[file stringByResolvingSymlinksInPath] error:nil];
+			} else {
+				deleteSuccess = [fm removeFileAtPath:file handler:nil];
+			}
 			if (!deleteSuccess && isLeopardOrHigher && (tool || (tool = [RootPipeExploit getTool]))) {
 				// Let's try and use RootPipe to delete the file…
 				deleteSuccess = [tool removeFileAtPath:file];

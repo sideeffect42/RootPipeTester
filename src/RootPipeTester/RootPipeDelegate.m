@@ -106,7 +106,7 @@
 	dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stderr)); // redirect stderr to pipe
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextField:) name:NSFileHandleReadCompletionNotification object:pipeHandle];
 	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextField:) name:NSFileHandleDataAvailableNotification object:pipeHandle];
-	[pipeHandle waitForDataInBackgroundAndNotify];
+	[pipeHandle performSelectorOnMainThread:@selector(waitForDataInBackgroundAndNotify) withObject:nil waitUntilDone:NO]; //Respects no buffer setting from above (current thread has no RunLoop, so we need to call on MainTread)!!
 	
 	
 	// Acquire information about this user's system (mostly for "debugging")
@@ -171,7 +171,6 @@
 
 - (void)updateTextField:(NSNotification *)notification {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	
 	NSData *data;
 	@try {
 		if ([[notification name] isEqualToString:NSFileHandleReadCompletionNotification]) {
