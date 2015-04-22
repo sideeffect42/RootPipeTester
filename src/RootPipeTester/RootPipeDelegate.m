@@ -104,8 +104,8 @@
 	NSFileHandle *pipeHandle = [pipe fileHandleForReading];
 	dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stdout)); // redirect stdout to pipe
 	dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stderr)); // redirect stderr to pipe
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextField:) name:NSFileHandleReadCompletionNotification object:pipeHandle];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextField:) name:NSFileHandleDataAvailableNotification object:pipeHandle];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextView:) name:NSFileHandleReadCompletionNotification object:pipeHandle];
+	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextView:) name:NSFileHandleDataAvailableNotification object:pipeHandle];
 	[pipeHandle performSelectorOnMainThread:@selector(waitForDataInBackgroundAndNotify) withObject:nil waitUntilDone:NO]; //Respects no buffer setting from above (current thread has no RunLoop, so we need to call on MainTread)!!
 	
 	
@@ -169,16 +169,23 @@
 	[pool release];
 }
 
-- (void)updateTextField:(NSNotification *)notification {
+- (void)updateTextView:(NSNotification *)notification {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSFileHandle *fh = (NSFileHandle *)[notification object];
 	NSData *data;
+	
 	@try {
 		if ([[notification name] isEqualToString:NSFileHandleReadCompletionNotification]) {
-			[[notification object] readInBackgroundAndNotify];
+			[fh readInBackgroundAndNotify];
 			data = (NSData *)[(NSDictionary *)[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
 		} else if ([[notification name] isEqualToString:NSFileHandleDataAvailableNotification]) {
-			[[notification object] waitForDataInBackgroundAndNotify];
-			data = [[notification object] availableData];
+			[fh waitForDataInBackgroundAndNotify];
+			data = [fh availableData];
+			
+			if ([data length] == 0) {
+				// File Handle reached EOF, let's unsubscribe from it's notifications to avoid having permanent notifications.
+				[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:fh];
+			}
 		} else return;
 	}
 	@catch (NSException *e) {
