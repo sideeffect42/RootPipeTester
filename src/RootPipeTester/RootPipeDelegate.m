@@ -110,6 +110,8 @@
 	
 	
 	// Acquire information about this user's system (mostly for "debugging")
+	NSDictionary *appInfo = [[NSBundle mainBundle] infoDictionary];
+	printf("%s %s\n", [(NSString *)[appInfo objectForKey:@"CFBundleName"] UTF8String], [(NSString *)[appInfo objectForKey:@"CFBundleVersion"] UTF8String]);
 	printf("Running tests as user: %s\n", [NSUserName() UTF8String]);
 	NSDictionary *systemVersion = [NSDictionary dictionaryWithContentsOfFile:@"/System/Library/CoreServices/SystemVersion.plist"];
 	printf("%s version: %s (%s)\n", 
