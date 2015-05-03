@@ -10,6 +10,9 @@
 		1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 1DDD58140DA1D0A300B32029 /* MainMenu.xib */; };
 		8210D4141AE4FA4A0074CDBE /* RootPipeExploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */; };
 		8210D49E1AE513920074CDBE /* RootPipeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8210D49D1AE513920074CDBE /* RootPipeTest.m */; };
+		82287F731AF64F1000CFA966 /* Reload.tif in Resources */ = {isa = PBXBuildFile; fileRef = 82287F701AF64F1000CFA966 /* Reload.tif */; };
+		82583B991AE92688005120E4 /* RightsInspectorDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82583B971AE92688005120E4 /* RightsInspectorDelegate.m */; };
+		82583BEB1AE94D84005120E4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82583BEA1AE94D84005120E4 /* Security.framework */; };
 		82B6ED361AD90AD600BFBAA2 /* Admin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B6ED351AD90AD600BFBAA2 /* Admin.framework */; };
 		82B6ED391AD90AE500BFBAA2 /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */; };
 		82B6EDD61AD91DC800BFBAA2 /* RootPipeDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */; };
@@ -32,6 +35,10 @@
 		8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeExploit.m; sourceTree = "<group>"; };
 		8210D49C1AE513920074CDBE /* RootPipeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootPipeTest.h; sourceTree = "<group>"; };
 		8210D49D1AE513920074CDBE /* RootPipeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeTest.m; sourceTree = "<group>"; };
+		82287F701AF64F1000CFA966 /* Reload.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Reload.tif; sourceTree = "<group>"; };
+		82583B971AE92688005120E4 /* RightsInspectorDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightsInspectorDelegate.m; sourceTree = "<group>"; };
+		82583B981AE92688005120E4 /* RightsInspectorDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightsInspectorDelegate.h; sourceTree = "<group>"; };
+		82583BEA1AE94D84005120E4 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = /System/Library/Frameworks/Security.framework; sourceTree = "<absolute>"; };
 		82B6ECED1AD903CA00BFBAA2 /* RootPipeDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootPipeDelegate.h; sourceTree = "<group>"; };
 		82B6ED351AD90AD600BFBAA2 /* Admin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Admin.framework; path = /System/Library/PrivateFrameworks/Admin.framework; sourceTree = "<absolute>"; };
 		82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = /System/Library/Frameworks/SecurityFoundation.framework; sourceTree = "<absolute>"; };
@@ -49,6 +56,7 @@
 				8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */,
 				82B6ED361AD90AD600BFBAA2 /* Admin.framework in Frameworks */,
 				82B6ED391AD90AE500BFBAA2 /* SecurityFoundation.framework in Frameworks */,
+				82583BEB1AE94D84005120E4 /* Security.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -58,12 +66,14 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				82B6ECED1AD903CA00BFBAA2 /* RootPipeDelegate.h */,
 				82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */,
-				8210D4121AE4FA4A0074CDBE /* RootPipeExploit.h */,
+				82B6ECED1AD903CA00BFBAA2 /* RootPipeDelegate.h */,
 				8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */,
-				8210D49C1AE513920074CDBE /* RootPipeTest.h */,
+				8210D4121AE4FA4A0074CDBE /* RootPipeExploit.h */,
 				8210D49D1AE513920074CDBE /* RootPipeTest.m */,
+				8210D49C1AE513920074CDBE /* RootPipeTest.h */,
+				82583B971AE92688005120E4 /* RightsInspectorDelegate.m */,
+				82583B981AE92688005120E4 /* RightsInspectorDelegate.h */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -71,6 +81,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				82583BEA1AE94D84005120E4 /* Security.framework */,
 				82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */,
 				82B6ED351AD90AD600BFBAA2 /* Admin.framework */,
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
@@ -120,6 +131,7 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
+				82287F6F1AF64F1000CFA966 /* TemplateIcons */,
 				82CA3F231ADEB02600938120 /* RootPipeTester.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -135,6 +147,15 @@
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		82287F6F1AF64F1000CFA966 /* TemplateIcons */ = {
+			isa = PBXGroup;
+			children = (
+				82287F701AF64F1000CFA966 /* Reload.tif */,
+			);
+			name = TemplateIcons;
+			path = Resources/TemplateIcons;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -186,6 +207,7 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				1DDD58160DA1D0A300B32029 /* MainMenu.xib in Resources */,
 				82CA3F241ADEB02600938120 /* RootPipeTester.icns in Resources */,
+				82287F731AF64F1000CFA966 /* Reload.tif in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,6 +222,7 @@
 				82B6EDD61AD91DC800BFBAA2 /* RootPipeDelegate.m in Sources */,
 				8210D4141AE4FA4A0074CDBE /* RootPipeExploit.m in Sources */,
 				8210D49E1AE513920074CDBE /* RootPipeTest.m in Sources */,
+				82583B991AE92688005120E4 /* RightsInspectorDelegate.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
