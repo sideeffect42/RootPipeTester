@@ -42,7 +42,7 @@
 	if ([notification name] == RootPipeTestStarted) {
 		if (!defaultWindowTitle) defaultWindowTitle = [[mainWindow title] retain];
 		
-		[mainWindow setTitle:[defaultWindowTitle stringByAppendingString:@" - Running\u2026"]];
+		[mainWindow setTitle:[defaultWindowTitle stringByAppendingString:@" - Running..."]];
 	} else if ([notification name] == RootPipeTestFinished) {
 		[mainWindow setTitle:defaultWindowTitle];
 	}
@@ -64,7 +64,7 @@
 	if ([contextInfo isEqualToString:@"StartTestDialog"]) {
 		if (returnCode == NSAlertDefaultReturn /* Start Test */) {
 			// Start the test
-			[startButton setHidden:YES];
+			[startButton removeFromSuperview];
 			[self initiateAutomatedTesting];
 		} else {
 			[startButton setEnabled:YES];
@@ -178,7 +178,7 @@
 	NSFileHandle *fh = (NSFileHandle *)[notification object];
 	NSData *data;
 	
-	@try {
+	NS_DURING
 		if ([[notification name] isEqualToString:NSFileHandleReadCompletionNotification]) {
 			[fh performSelectorOnMainThread:@selector(readInBackgroundAndNotify) withObject:nil waitUntilDone:NO];
 			data = (NSData *)[(NSDictionary *)[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
@@ -191,10 +191,9 @@
 				[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:fh];
 			}
 		} else return;
-	}
-	@catch (NSException *e) {
+	NS_HANDLER
 		return;
-	}
+	NS_ENDHANDLER
 	
 	NSAttributedString *attributedString = [[NSAttributedString alloc] autorelease];
 	NSString *str = [[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];

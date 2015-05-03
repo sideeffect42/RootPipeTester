@@ -173,8 +173,17 @@
 
 - (NSDictionary *)rightDefinitionByName:(NSString *)name {
 	NSDictionary *rightDefinition = nil;
+	OSStatus (*rightget)(const char *, CFDictionaryRef *) = CFBundleGetFunctionPointerForName(CFBundleCreate(kCFAllocatorDefault, (CFURLRef)[NSURL URLWithString:@"/System/Library/Frameworks/Security.framework"]), (CFStringRef)@"AuthorizationRightGet");
 	
-	AuthorizationRightGet([name UTF8String], (CFDictionaryRef *)&rightDefinition); // rightDefinition is autoreleased
+	if (rightget) {
+		// Ask Authorization Services for the dictionary (10.3+)
+		(*rightget)([name UTF8String], (CFDictionaryRef *)&rightDefinition); // rightDefinition is autoreleased
+	} else {
+		// Read from the Policy Database ourselfs *sigh* (10.2.x)
+		[self loadPolicyDBFromPath:POLICY_DATABASE_FILE]; // reload DB
+		// TODO: Parse and associate XML comments :/
+		rightDefinition = [_rightsDB objectForKey:name];
+	}
 	
 	return rightDefinition;
 }

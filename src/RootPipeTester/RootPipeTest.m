@@ -22,6 +22,17 @@
 
 #import "RootPipeTest.h"
 
+#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_3
+@class NSError; // resolve building error on 10.2.x and lower.
+#endif
+#if MAC_OS_X_VERSION_MAX_ALLOWED < MAC_OS_X_VERSION_10_4
+typedef enum {
+	NSDateFormatterBehaviorDefault = 0,
+	NSDateFormatterBehavior10_0 = 1000,
+	NSDateFormatterBehavior10_4 = 1040,
+} NSDateFormatterBehavior;
+#endif
+
 NSString * const RootPipeTestStarted = @"RootPipeTestStarted";
 NSString * const RootPipeTestFinished = @"RootPipeTestFinished";
 
@@ -92,7 +103,7 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 	printf("Running RootPipe Test %s user authorization\n", (useAuth ? "with" : "without"));
 	
 	// Get Tool
-	printf("Trying to get tool\u2026\n");
+	printf("Trying to get tool...\n");
 	id tool = [RootPipeExploit getTool:useAuth];
 	if ([tool respondsToSelector:@selector(description)] || tool == nil) {
 		printf("Tool is: %s\n", [[tool description] UTF8String]);
