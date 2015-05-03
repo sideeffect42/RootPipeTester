@@ -71,13 +71,17 @@
 		}
 	}
 	
-	if ([contextInfo isEqualToString:@"TerminateShouldCleanUpDialog"]) {
+	if ([contextInfo isEqualToString:@"MainCloseShouldCleanUpDialog"] || [contextInfo isEqualToString:@"TerminateShouldCleanUpDialog"]) {
 		if (returnCode == NSAlertDefaultReturn /* Clean Up */) {
 			[_rpTest cleanUp];
 		}
 		
 		// Bye bye
-		[[NSApplication sharedApplication] stop:sheet];
+		if ([contextInfo isEqualToString:@"MainCloseShouldCleanUpDialog"]) {
+			[mainWindow close]; // won't show the dialog again
+		} else {
+			[NSApp stop:sheet]; // quit app
+		}
 	}
 }
 
@@ -212,22 +216,34 @@
 	[pool release];
 }
 
-- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
+- (BOOL)mainWindowCanCloseTerminating:(BOOL)terminating { // terminating should be YES if this method is called from applicationShouldTerminate:
 	NSArray *leftoverFiles = [[_rpTest leftoverTestFiles] allObjects];
 	
 	if ([leftoverFiles count] > 0) {
 		NSBeginInformationalAlertSheet(@"Delete the SUID files this app created?", 
-									   @"Clean Up", @"Quit", nil, 
-									   mainWindow, 
+									   @"Clean Up", 
+									   (terminating ? @"Quit" : @"Close"), 
+									   nil, 
+									   (terminating ? nil : mainWindow), 
 									   self, 
 									   NULL, @selector(sheetDidDismiss:returnCode:contextInfo:), 
-									   @"TerminateShouldCleanUpDialog", 
+									   (terminating ? @"TerminateShouldCleanUpDialog" : @"MainCloseShouldCleanUpDialog"), 
 									   [NSString stringWithFormat:@"Select \"Clean Up\" to delete the useless files this app created.\nThis is probably what you want unless you want to manually inspect the files for yourself afterwards.\n\nThis will delete: %@", [leftoverFiles descriptionWithLocale:nil indent:1]]
 									   );
-		return NSTerminateCancel;
+		return NO;
 	} else {
-		return NSTerminateNow;
+		return YES;
 	}
+}
+
+- (BOOL)windowShouldClose:(id)window {
+	if (window != mainWindow) return YES; //only want to act on main window close
+	return [self mainWindowCanCloseTerminating:NO];
+}
+
+- (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
+	// call clean up procedure because applicationShouldTerminate closes windows directly, so windowShouldClose: won't get called
+	return ([self mainWindowCanCloseTerminating:YES] ? NSTerminateNow : NSTerminateCancel);
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)application {
