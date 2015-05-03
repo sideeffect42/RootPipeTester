@@ -236,7 +236,9 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 		} else continue; // if the file didn't exist in the beginning, no further processing is required
 		
 		if ([self hasLeftoverTestFiles]) {
-			NSLog(@"Clean up didn't work 100 percent correctly. Please run the following command from your Terminal to remove the testing files: sudo rm -iv -- %@;", [NSString stringWithFormat:FILE_PATH_FMT, @"*"]);
+			NSRunInformationalAlertPanel(@"Clean Up", 
+										 [NSString stringWithFormat:@"Clean up didn't work 100 percent correctly.\nPlease run the following command from your Terminal to remove the testing files:\n\nsudo rm -iv -- %@;", [NSString stringWithFormat:FILE_PATH_FMT, @"*"]],
+										 nil, nil, nil);
 		}		
 	}
 	
