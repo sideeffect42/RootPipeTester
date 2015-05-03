@@ -154,6 +154,10 @@
 	
 	printf("\nTried to write the following files: %s\n", [[[[_rpTest usedTestFiles] allObjects] descriptionWithLocale:nil indent:1] UTF8String]);
 	
+	// Test finished
+	printf("\nTest finished.\n");
+	[[NSNotificationCenter defaultCenter] postNotificationName:RootPipeTestFinished object:NSApp];
+
 	// Restore stdout and stderr
 	fflush(stdout);
 	dup2(oldStdOut, fileno(stdout));
@@ -161,12 +165,6 @@
 	fflush(stderr);
 	dup2(oldStdErr, fileno(stderr));
 	close(oldStdErr);
-	
-	// Make sure that all the contents of the redirected "test buffers" are in the TextView
-	[NSThread detachNewThreadSelector:@selector(postNotification:) toTarget:[NSNotificationCenter defaultCenter] withObject:[NSNotification notificationWithName:NSFileHandleDataAvailableNotification object:pipeHandle]];
-	
-	// Test finished
-	[[NSNotificationCenter defaultCenter] postNotificationName:RootPipeTestFinished object:NSApp];
 	
 	[pool release];
 }
@@ -178,10 +176,10 @@
 	
 	@try {
 		if ([[notification name] isEqualToString:NSFileHandleReadCompletionNotification]) {
-			[fh readInBackgroundAndNotify];
+			[fh performSelectorOnMainThread:@selector(readInBackgroundAndNotify) withObject:nil waitUntilDone:NO];
 			data = (NSData *)[(NSDictionary *)[notification userInfo] objectForKey:NSFileHandleNotificationDataItem];
 		} else if ([[notification name] isEqualToString:NSFileHandleDataAvailableNotification]) {
-			[fh waitForDataInBackgroundAndNotify];
+			[fh performSelectorOnMainThread:@selector(waitForDataInBackgroundAndNotify) withObject:nil waitUntilDone:NO];
 			data = [fh availableData];
 			
 			if ([data length] == 0) {
