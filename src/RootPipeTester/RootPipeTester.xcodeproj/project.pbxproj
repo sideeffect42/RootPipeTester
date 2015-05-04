@@ -43,7 +43,7 @@
 		82B6ED351AD90AD600BFBAA2 /* Admin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Admin.framework; path = /System/Library/PrivateFrameworks/Admin.framework; sourceTree = "<absolute>"; };
 		82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = /System/Library/Frameworks/SecurityFoundation.framework; sourceTree = "<absolute>"; };
 		82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeDelegate.m; sourceTree = "<group>"; };
-		82CA3F231ADEB02600938120 /* RootPipeTester.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = RootPipeTester.icns; sourceTree = "<group>"; };
+		82CA3F231ADEB02600938120 /* RootPipeTester.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = RootPipeTester.icns; path = Resources/RootPipeTester.icns; sourceTree = "<group>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* RootPipeTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RootPipeTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
