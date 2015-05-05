@@ -1,0 +1,24 @@
+{
+    IBClasses = (
+        {
+            ACTIONS = {"" = id; }; 
+            CLASS = FirstResponder; 
+            LANGUAGE = ObjC; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            CLASS = RightsInspectorDelegate; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {rightChooser = NSComboBox; rightView = NSOutlineView; }; 
+            SUPERCLASS = NSObject; 
+        }, 
+        {
+            ACTIONS = {startTest = id; }; 
+            CLASS = RootPipeDelegate; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {mainWindow = NSWindow; startButton = NSButton; textOutput = NSTextView; }; 
+            SUPERCLASS = NSObject; 
+        }
+    ); 
+    IBVersion = 1; 
+}
