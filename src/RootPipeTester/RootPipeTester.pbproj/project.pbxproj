@@ -178,7 +178,7 @@
 				82EB2FB91AF791CE00A8000E,
 				29B97318FDCFA39411CA2CEA,
 				089C165CFE840E0CC02AAC07,
-				8277ACE91AF556A000A8000E,
+				8278EAF71AFCF61B00A8000E,
 			);
 			isa = PBXGroup;
 			name = Resources;
@@ -261,7 +261,7 @@
 	<key>CFBundleExecutable</key>
 	<string>RootPipeTester</string>
 	<key>CFBundleIconFile</key>
-	<string>RootPipeTester.icns</string>
+	<string>RootPipeTesterLegacy.icns</string>
 	<key>CFBundleIdentifier</key>
 	<string>ch.maniswebdesign.RootPipeTester</string>
 	<key>CFBundleInfoDictionaryVersion</key>
@@ -300,8 +300,8 @@
 			files = (
 				080E96DCFE201CFB7F000001,
 				089C165EFE840E0CC02AAC07,
-				8277ACEA1AF556A000A8000E,
 				82EB2FBB1AF791CE00A8000E,
+				8278EAF81AFCF61B00A8000E,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -476,14 +476,14 @@
 			settings = {
 			};
 		};
-		8277ACE91AF556A000A8000E = {
+		8278EAF71AFCF61B00A8000E = {
 			isa = PBXFileReference;
-			name = RootPipeTester.icns;
-			path = Resources/RootPipeTester.icns;
+			name = RootPipeTesterLegacy.icns;
+			path = Resources/RootPipeTesterLegacy.icns;
 			refType = 4;
 		};
-		8277ACEA1AF556A000A8000E = {
-			fileRef = 8277ACE91AF556A000A8000E;
+		8278EAF81AFCF61B00A8000E = {
+			fileRef = 8278EAF71AFCF61B00A8000E;
 			isa = PBXBuildFile;
 			settings = {
 			};
