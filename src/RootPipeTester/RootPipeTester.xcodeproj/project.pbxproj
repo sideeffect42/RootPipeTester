@@ -14,7 +14,7 @@
 		82583B991AE92688005120E4 /* RightsInspectorDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82583B971AE92688005120E4 /* RightsInspectorDelegate.m */; };
 		82583BEB1AE94D84005120E4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82583BEA1AE94D84005120E4 /* Security.framework */; };
 		82B6ED361AD90AD600BFBAA2 /* Admin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B6ED351AD90AD600BFBAA2 /* Admin.framework */; };
-		82B6ED391AD90AE500BFBAA2 /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */; };
+		82B6ED391AD90AE500BFBAA2 /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		82B6EDD61AD91DC800BFBAA2 /* RootPipeDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */; };
 		82CA3F241ADEB02600938120 /* RootPipeTester.icns in Resources */ = {isa = PBXBuildFile; fileRef = 82CA3F231ADEB02600938120 /* RootPipeTester.icns */; };
 		82EDC4361AFF4E5500E541DD /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82EDC4351AFF4E5500E541DD /* PreferencePanes.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
