@@ -176,7 +176,10 @@ Class NSAdminPreference = NULL;
 	return ([_rightsDB isKindOfClass:[NSDictionary class]] && [_rightsDB count] > 0);
 }
 
-- (void)awakeFromNib {
+- (void)windowDidBecomeKey:(NSNotification *)notification {
+	static BOOL inspectorWindowHasInitialized = NO;
+	if (inspectorWindowHasInitialized || [notification object] != inspectorWindow) return;
+	inspectorWindowHasInitialized = YES;
 	
 	// Load Policy Database
 	if (![self loadPolicyDBFromPath:POLICY_DATABASE_FILE]) { 
