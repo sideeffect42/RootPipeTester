@@ -146,10 +146,25 @@
 
 @implementation RightsInspectorDelegate
 
+Class NSAdminPreference = NULL;
+
 - (id)init {
 	if ((self = [super init])) {
+		NSAdminPreference = NSClassFromString(@"NSAdminPreference");
 		_rightsDB = nil;
 		_displayedRight = nil;
+		_systemPreferencesRight = @"system.preferences"; // default
+		
+		if (NSAdminPreference) {
+			// ask it for the appropriate System Preferences right
+			id adminPreference = [[NSAdminPreference alloc] init];
+			if ([adminPreference respondsToSelector:@selector(authorizationString)]) {
+				char *prefStr = (char *)[adminPreference authorizationString];
+				_systemPreferencesRight = [[NSString alloc] initWithUTF8String:prefStr];
+			}
+			[adminPreference release];
+		}
+		
 	}
 	return self;
 }
@@ -173,8 +188,8 @@
 	[rightChooser setDataSource:[[RPTRightsDataSource alloc] initWithRightsDB:_rightsDB]];
 	[rightChooser reloadData];
 	
-	// Select "system.preferences" by default
-	[rightChooser selectItemAtIndex:[[rightChooser dataSource] comboBox:rightChooser indexOfItemWithStringValue:@"system.preferences"]];
+	// Select "System Preferences right" by default	
+	[rightChooser selectItemAtIndex:[[rightChooser dataSource] comboBox:rightChooser indexOfItemWithStringValue:_systemPreferencesRight]];
 	[self updateOutlineViewWithSelectionOfComboBox:rightChooser];
 }
 
@@ -224,6 +239,7 @@
 	[[rightView dataSource] release];
 	[_rightsDB release];
 	[_displayedRight release];
+	[_systemPreferencesRight release];
 	[super dealloc];
 }
 

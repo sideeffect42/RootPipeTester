@@ -62,6 +62,7 @@
 				1058C7A1FEA54F0111CA2CBB,
 				8277ACD11AF541C000A8000E,
 				8277ACD31AF541D100A8000E,
+				823271A41AFF667200A8000E,
 			);
 			isa = PBXGroup;
 			name = "Linked Frameworks";
@@ -332,6 +333,7 @@
 				1058C7A3FEA54F0111CA2CBB,
 				8277ACD21AF541C000A8000E,
 				8277ACD41AF541D100A8000E,
+				823271A51AFF667200A8000E,
 			);
 			isa = PBXFrameworksBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -375,6 +377,18 @@
 //822
 //823
 //824
+		823271A41AFF667200A8000E = {
+			isa = PBXFrameworkReference;
+			name = PreferencePanes.framework;
+			path = /System/Library/Frameworks/PreferencePanes.framework;
+			refType = 0;
+		};
+		823271A51AFF667200A8000E = {
+			fileRef = 823271A41AFF667200A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
 		8277ACD11AF541C000A8000E = {
 			isa = PBXFrameworkReference;
 			name = Admin.framework;

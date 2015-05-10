@@ -17,6 +17,7 @@
 		82B6ED391AD90AE500BFBAA2 /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */; };
 		82B6EDD61AD91DC800BFBAA2 /* RootPipeDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */; };
 		82CA3F241ADEB02600938120 /* RootPipeTester.icns in Resources */ = {isa = PBXBuildFile; fileRef = 82CA3F231ADEB02600938120 /* RootPipeTester.icns */; };
+		82EDC4361AFF4E5500E541DD /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82EDC4351AFF4E5500E541DD /* PreferencePanes.framework */; settings = {ATTRIBUTES = (Weak, ); }; };
 		8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
@@ -44,6 +45,7 @@
 		82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = /System/Library/Frameworks/SecurityFoundation.framework; sourceTree = "<absolute>"; };
 		82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeDelegate.m; sourceTree = "<group>"; };
 		82CA3F231ADEB02600938120 /* RootPipeTester.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = RootPipeTester.icns; path = Resources/RootPipeTester.icns; sourceTree = "<group>"; };
+		82EDC4351AFF4E5500E541DD /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		8D1107320486CEB800E47090 /* RootPipeTester.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = RootPipeTester.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
@@ -57,6 +59,7 @@
 				82B6ED361AD90AD600BFBAA2 /* Admin.framework in Frameworks */,
 				82B6ED391AD90AE500BFBAA2 /* SecurityFoundation.framework in Frameworks */,
 				82583BEB1AE94D84005120E4 /* Security.framework in Frameworks */,
+				82EDC4361AFF4E5500E541DD /* PreferencePanes.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -81,6 +84,7 @@
 		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				82EDC4351AFF4E5500E541DD /* PreferencePanes.framework */,
 				82583BEA1AE94D84005120E4 /* Security.framework */,
 				82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */,
 				82B6ED351AD90AD600BFBAA2 /* Admin.framework */,

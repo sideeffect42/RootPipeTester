@@ -44,6 +44,7 @@
 	
 	NSDictionary *_rightsDB;
 	NSString *_displayedRight;
+	NSString *_systemPreferencesRight;
 }
 - (IBAction)refreshView:(NSButton *)sender;
 - (IBAction)comboBoxAction:(NSComboBox *)sender;
