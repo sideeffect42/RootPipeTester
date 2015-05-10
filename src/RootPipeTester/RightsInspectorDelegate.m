@@ -1,5 +1,6 @@
 #import "RightsInspectorDelegate.h"
 
+#define ORDER_RIGHTS_BY_NAME 1
 #define POLICY_DATABASE_FILE @"/private/etc/authorization"
 
 @implementation RPTKeyValuePair
@@ -32,7 +33,12 @@
 
 - (id)initWithRightsDB:(NSDictionary *)rightsDB {
 	if ((self = [super init])) {
-		_rights = [[rightsDB allKeys] retain];
+		NSArray *rightKeys = [rightsDB allKeys];
+		#if ORDER_RIGHTS_BY_NAME
+			rightKeys = [rightKeys sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)];
+		#endif
+		
+		_rights = [rightKeys retain];
 	}
 	return self;
 }
