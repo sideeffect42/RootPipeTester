@@ -164,7 +164,10 @@
 - (void)awakeFromNib {
 	
 	// Load Policy Database
-	if (![self loadPolicyDBFromPath:POLICY_DATABASE_FILE]) { NSLog(@"Error while loading Policy DB"); }
+	if (![self loadPolicyDBFromPath:POLICY_DATABASE_FILE]) { 
+		NSRunAlertPanel(@"Error", [NSString stringWithFormat:@"An error occurred while loading the Policy Database from \"%@\".", POLICY_DATABASE_FILE], nil, nil, nil);
+		return;
+	}
 	
 	// Initialise Combo Box Values
 	[rightChooser setDataSource:[[RPTRightsDataSource alloc] initWithRightsDB:_rightsDB]];
@@ -177,9 +180,12 @@
 
 - (NSDictionary *)rightDefinitionByName:(NSString *)name {
 	NSDictionary *rightDefinition = nil;
-	OSStatus (*rightget)(const char *, CFDictionaryRef *) = CFBundleGetFunctionPointerForName(CFBundleCreate(kCFAllocatorDefault, (CFURLRef)[NSURL URLWithString:@"/System/Library/Frameworks/Security.framework"]), (CFStringRef)@"AuthorizationRightGet");
-	
-	if (rightget) {
+	OSStatus (*rightget)(const char *, CFDictionaryRef *) = NULL;
+
+	CFBundleRef securityBundle = CFBundleGetBundleWithIdentifier((CFStringRef)@"com.apple.security");
+
+	if (securityBundle != NULL &&
+	   (rightget = CFBundleGetFunctionPointerForName(securityBundle, (CFStringRef)@"AuthorizationRightGet"))) {
 		// Ask Authorization Services for the dictionary (10.3+)
 		(*rightget)([name UTF8String], (CFDictionaryRef *)&rightDefinition); // rightDefinition is autoreleased
 	} else {
