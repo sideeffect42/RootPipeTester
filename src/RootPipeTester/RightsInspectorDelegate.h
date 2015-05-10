@@ -46,6 +46,8 @@
 	NSString *_displayedRight;
 }
 - (IBAction)refreshView:(NSButton *)sender;
+- (IBAction)comboBoxAction:(NSComboBox *)sender;
+
 - (NSDictionary *)rightDefinitionByName:(NSString *)name;
 - (void)dealloc;
 @end

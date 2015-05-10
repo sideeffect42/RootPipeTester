@@ -162,19 +162,17 @@
 }
 
 - (void)awakeFromNib {
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateOutlineView:) name:NSComboBoxSelectionDidChangeNotification object:rightChooser];
 	
 	// Load Policy Database
 	if (![self loadPolicyDBFromPath:POLICY_DATABASE_FILE]) { NSLog(@"Error while loading Policy DB"); }
 	
-	// Initialise Combo Box
-	[rightChooser setCompletes:YES];
-	[rightChooser setUsesDataSource:YES];
+	// Initialise Combo Box Values
 	[rightChooser setDataSource:[[RPTRightsDataSource alloc] initWithRightsDB:_rightsDB]];
 	[rightChooser reloadData];
 	
 	// Select "system.preferences" by default
 	[rightChooser selectItemAtIndex:[[rightChooser dataSource] comboBox:rightChooser indexOfItemWithStringValue:@"system.preferences"]];
+	[self updateOutlineViewWithSelectionOfComboBox:rightChooser];
 }
 
 - (NSDictionary *)rightDefinitionByName:(NSString *)name {
@@ -203,14 +201,16 @@
 	_displayedRight = [rightName retain];
 }
 
-- (void)updateOutlineView:(NSNotification *)notification {
-	NSComboBox *comboBox = [notification object];
+- (void)updateOutlineViewWithSelectionOfComboBox:(NSComboBox *)comboBox {
 	NSString *rightName = [[comboBox dataSource] comboBox:comboBox objectValueForItemAtIndex:[comboBox indexOfSelectedItem]];
 	[self updateOutlineViewWithRightName:rightName];
 }
 
 - (IBAction)refreshView:(NSButton *)sender {
     [self updateOutlineViewWithRightName:_displayedRight];
+}
+- (IBAction)comboBoxAction:(NSComboBox *)sender {
+	[self updateOutlineViewWithSelectionOfComboBox:sender];
 }
 
 - (void)dealloc {

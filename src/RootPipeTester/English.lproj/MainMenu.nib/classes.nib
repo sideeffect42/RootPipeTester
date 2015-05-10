@@ -6,10 +6,18 @@
             LANGUAGE = ObjC; 
             SUPERCLASS = NSObject; 
         }, 
+        {CLASS = RPTKeyValuePair; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = RPTRightsDataSource; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = RPTRightsViewDataSource; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
+            ACTIONS = {comboBoxAction = id; refreshView = id; }; 
             CLASS = RightsInspectorDelegate; 
             LANGUAGE = ObjC; 
-            OUTLETS = {rightChooser = NSComboBox; rightView = NSOutlineView; }; 
+            OUTLETS = {
+                inspectorWindow = NSWindow; 
+                rightChooser = NSComboBox; 
+                rightView = NSOutlineView; 
+            }; 
             SUPERCLASS = NSObject; 
         }, 
         {
