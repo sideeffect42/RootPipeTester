@@ -251,15 +251,15 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 					deleteSuccess = ((BOOL (*)(id, SEL, NSString *))[fm methodForSelector:toolRemoveSelector])(tool, toolRemoveSelector, file);
 				}
 				
-				if (!deleteSuccess) { NSLog(@"Clean up failed even using RootPipe."); }
+				if (!deleteSuccess) { NSLog(@"Clean up for \"%@\" failed even using RootPipe.", file); }
 			}
 		} else continue; // if the file didn't exist in the beginning, no further processing is required
-		
-		if ([self hasLeftoverTestFiles]) {
-			NSRunInformationalAlertPanel(@"Clean Up", 
-										 [NSString stringWithFormat:@"Clean up didn't work 100 percent correctly.\nPlease run the following command from your Terminal to remove the testing files:\n\nsudo rm -iv -- %@;", [NSString stringWithFormat:FILE_PATH_FMT, @"*"]],
-										 nil, nil, nil);
-		}		
+	}
+	
+	if ([self hasLeftoverTestFiles]) {
+		NSRunInformationalAlertPanel(@"Clean Up", 
+									 [NSString stringWithFormat:@"Clean up didn't work 100 percent correctly.\nPlease run the following command from your Terminal to remove the testing files:\n\nsudo rm -iv -- %@;", [NSString stringWithFormat:FILE_PATH_FMT, @"*"]],
+									 nil, nil, nil);
 	}
 	
 	[files release];
