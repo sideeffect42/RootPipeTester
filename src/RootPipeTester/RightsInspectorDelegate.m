@@ -211,7 +211,8 @@ Class NSAdminPreference = NULL;
 	if (securityBundle != NULL &&
 	   (rightget = CFBundleGetFunctionPointerForName(securityBundle, (CFStringRef)@"AuthorizationRightGet"))) {
 		// Ask Authorization Services for the dictionary (10.3+)
-		(*rightget)([name UTF8String], (CFDictionaryRef *)&rightDefinition); // rightDefinition is autoreleased
+		OSStatus status = (*rightget)([name UTF8String], (CFDictionaryRef *)&rightDefinition); // rightDefinition is autoreleased
+		if (status != errAuthorizationSuccess) return nil;
 	} else {
 		// Read from the Policy Database ourselfs *sigh* (10.2.x)
 		[self loadPolicyDBFromPath:POLICY_DATABASE_FILE]; // reload DB
@@ -236,8 +237,39 @@ Class NSAdminPreference = NULL;
 	[self updateOutlineViewWithRightName:rightName];
 }
 
-- (IBAction)refreshView:(NSButton *)sender {
+- (IBAction)displaySystemPreferencesRight:(id)sender {
+	[rightChooser selectItemAtIndex:[[rightChooser dataSource] comboBox:rightChooser indexOfItemWithStringValue:_systemPreferencesRight]];
+	[self updateOutlineViewWithSelectionOfComboBox:rightChooser];
+}
+- (IBAction)refreshView:(id)sender {
     [self updateOutlineViewWithRightName:_displayedRight];
+}
+- (IBAction)exportRightDefinition:(id)sender {
+	NSSavePanel *savePanel = [NSSavePanel savePanel];
+	[savePanel setRequiredFileType:@"plist"];
+	[savePanel setPrompt:@"Export"];
+		
+	// Display Save Sheet
+	[savePanel beginSheetForDirectory:nil 
+								 file:[NSString stringWithFormat:@"%@.plist", _displayedRight] 
+					   modalForWindow:inspectorWindow 
+						modalDelegate:self 
+					   didEndSelector:@selector(savePanelDidEnd:returnCode:contextInfo:) 
+						  contextInfo:[_displayedRight copy]
+	 ];
+}
+- (void)savePanelDidEnd:(NSSavePanel *)sheet returnCode:(int)returnCode contextInfo:(void *)contextInfo {
+	NSString *rightName = [(id)contextInfo autorelease];
+	
+	if (returnCode != NSOKButton) return;
+	NSString *destinationFile = [sheet filename];
+		
+	NSDictionary *rightDefinition = [self rightDefinitionByName:rightName]; // returns nil if not found
+	if (!rightDefinition) {
+		NSRunAlertPanel(@"Could not export Right Definition", @"The Right Definition could not be exported because the definition is empty", nil, nil, nil);
+		return;
+	}
+	[rightDefinition writeToFile:destinationFile atomically:YES];
 }
 - (IBAction)comboBoxAction:(NSComboBox *)sender {
 	[self updateOutlineViewWithSelectionOfComboBox:sender];

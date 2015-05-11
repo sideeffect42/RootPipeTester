@@ -1,6 +1,11 @@
 #import <Cocoa/Cocoa.h>
 #if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3
 #include <Security/AuthorizationDB.h>
+#else
+enum {
+	errAuthorizationSuccess					= 0,      /* The operation completed successfully. */
+	// rest omitted
+};
 #endif
 
 @interface RPTKeyValuePair : NSObject {
@@ -48,7 +53,9 @@
 }
 - (id)init;
 
-- (IBAction)refreshView:(NSButton *)sender;
+- (IBAction)displaySystemPreferencesRight:(id)sender;
+- (IBAction)refreshView:(id)sender;
+- (IBAction)exportRightDefinition:(id)sender;
 - (IBAction)comboBoxAction:(NSComboBox *)sender;
 
 - (NSDictionary *)rightDefinitionByName:(NSString *)name;

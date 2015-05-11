@@ -10,7 +10,12 @@
         {CLASS = RPTRightsDataSource; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {CLASS = RPTRightsViewDataSource; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
         {
-            ACTIONS = {comboBoxAction = id; refreshView = id; }; 
+            ACTIONS = {
+                comboBoxAction = id; 
+                displaySystemPreferencesRight = id; 
+                exportRightDefinition = id; 
+                refreshView = id; 
+            }; 
             CLASS = RightsInspectorDelegate; 
             LANGUAGE = ObjC; 
             OUTLETS = {
