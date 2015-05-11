@@ -46,6 +46,8 @@
 	NSString *_displayedRight;
 	NSString *_systemPreferencesRight;
 }
+- (id)init;
+
 - (IBAction)refreshView:(NSButton *)sender;
 - (IBAction)comboBoxAction:(NSComboBox *)sender;
 

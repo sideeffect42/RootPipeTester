@@ -50,17 +50,18 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 		if (newStyleDf) {
 			// Use 10.4 style Date Formatter
 			df = [NSDateFormatter new];
-			if ([df respondsToSelector:@selector(setFormatterBehavior:)]) {
-				[df setFormatterBehavior:NSDateFormatterBehavior10_4];
+			SEL setBehaviorSelector = @selector(setFormatterBehavior:);
+			if ([df respondsToSelector:setBehaviorSelector]) {
+				((void (*)(id, SEL, NSDateFormatterBehavior))[df methodForSelector:setBehaviorSelector])(df, setBehaviorSelector, NSDateFormatterBehavior10_4);
 			}
-			[df setDateFormat:@"ddMMYYYYHHmmss"];
+			[df performSelector:@selector(setDateFormat:) withObject:@"ddMMYYYYHHmmss"];
 		} else {
 			// Use pre-10.4 style Date Formatter
 			df = [[NSDateFormatter alloc] initWithDateFormat:@"%d%m%Y%H%M%S" allowNaturalLanguage:NO];
 		}
 	}
 	
-	NSString *dateString = (newStyleDf ? [df stringFromDate:[NSDate date]] : [df stringForObjectValue:[NSDate date]]);
+	NSString *dateString = [df performSelector:(newStyleDf ? @selector(stringFromDate:) : @selector(stringForObjectValue:)) withObject:[NSDate date]];
 	return [NSString stringWithFormat:FILE_PATH_FMT, dateString];
 }
 
@@ -118,17 +119,17 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 	}
 	
 	// Try to write file
-	BOOL createResult = [tool createFileWithContents:FILE_CONTENTS 
-												path:testFile 
-										  attributes:[NSDictionary dictionaryWithObjectsAndKeys:
-													  [NSNumber numberWithUnsignedShort /* maybe unsigned long should be used here… */ :04777], NSFilePosixPermissions, 
-													  @"root", NSFileOwnerAccountName, 
-													  @"wheel", NSFileGroupOwnerAccountName, 
-													  nil
-													  ]
-						 ];
+	NSDictionary *createFileAttributesDictionary = [NSDictionary dictionaryWithObjectsAndKeys:
+													[NSNumber numberWithUnsignedShort /* maybe unsigned long should be used here… */ :04777], NSFilePosixPermissions, 
+													@"root", NSFileOwnerAccountName, 
+													@"wheel", NSFileGroupOwnerAccountName, 
+													nil
+													];
 	
-	if (!createResult) {
+	
+	BOOL createFileResult = [tool createFileWithContents:FILE_CONTENTS path:testFile attributes:createFileAttributesDictionary];
+	
+	if (!createFileResult) {
 		printf("The tool indicates that writing the file \"%s\" failed.\n", testFileStr);
 	}
 	
@@ -142,7 +143,7 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 		printf("File at \"%s\" does not exist.\n", testFileStr);
 		return NO; 
 	} else {
-		printf("%sile at \"%s\" exists.\n", (createResult?"F":"But f"), testFileStr);
+		printf("%sile at \"%s\" exists.\n", (createFileResult?"F":"But f"), testFileStr);
 	}
 	
 	NSData *writtenFileContent = [fm contentsAtPath:testFile];
@@ -154,9 +155,11 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 	}
 	
 	NSDictionary *writtenFileAttributes = nil;
-	if ([fm respondsToSelector:@selector(attributesOfItemAtPath:error:)]) {
+	SEL newAttributesSelector = @selector(attributesOfItemAtPath:error:);
+	if ([fm respondsToSelector:newAttributesSelector]) {
+		// - (NSDictionary *)attributesOfItemAtPath:(NSString *)patherror:(NSError **)error   AVAILABLE_MAC_OS_X_VERSION_10_5_AND_LATER
 		NSError *error = nil;
-		writtenFileAttributes = [fm attributesOfItemAtPath:[testFile stringByResolvingSymlinksInPath] error:&error];
+		writtenFileAttributes = ((NSDictionary *(*)(id, SEL, NSString *, NSError **))[fm methodForSelector:newAttributesSelector])(fm, newAttributesSelector, [testFile stringByResolvingSymlinksInPath], &error);
 		if (error) {
 			printf("Could not read file attributes.\n");
 			return NO;
@@ -234,14 +237,20 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 		if ([fm fileExistsAtPath:file]) {
 			// Delete our testing file
 			deleteSuccess = NO;
-			if ([fm respondsToSelector:@selector(removeItemAtPath:error:)]) {
-				deleteSuccess = [fm removeItemAtPath:[file stringByResolvingSymlinksInPath] error:nil];
+			SEL newRemoveSelector = @selector(removeItemAtPath:error:);
+			if ([fm respondsToSelector:newRemoveSelector]) {
+				// - (BOOL)removeItemAtPath:(NSString *)path error:(NSError **)error   AVAILABLE_MAC_OS_X_VERSION_10_5_AND_LATER
+				deleteSuccess = ((BOOL (*)(id, SEL, NSString *, NSError **))[fm methodForSelector:newRemoveSelector])(fm, newRemoveSelector, [file stringByResolvingSymlinksInPath], nil);
 			} else {
 				deleteSuccess = [fm removeFileAtPath:file handler:nil];
 			}
-			if (!deleteSuccess && isLeopardOrHigher && (tool || (tool = [RootPipeExploit getTool]))) {
-				// Let's try and use RootPipe to delete the file…
-				deleteSuccess = [tool removeFileAtPath:file];
+			if (!deleteSuccess && isLeopardOrHigher && (tool = (tool ?: [RootPipeExploit getTool]))) {
+				// Let's try and use RootPipe to delete the file...
+				SEL toolRemoveSelector = @selector(removeFileAtPath:);
+				if ([tool respondsToSelector:toolRemoveSelector]) {
+					deleteSuccess = ((BOOL (*)(id, SEL, NSString *))[fm methodForSelector:toolRemoveSelector])(tool, toolRemoveSelector, file);
+				}
+				
 				if (!deleteSuccess) { NSLog(@"Clean up failed even using RootPipe."); }
 			}
 		} else continue; // if the file didn't exist in the beginning, no further processing is required

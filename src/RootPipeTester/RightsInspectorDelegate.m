@@ -143,6 +143,12 @@
 @end
 
 
+@interface RightsInspectorDelegate (PrivateMethods)
+- (BOOL)loadPolicyDBFromPath:(NSString *)path;
+- (void)windowDidBecomeKey:(NSNotification *)notification;
+- (void)updateOutlineViewWithRightName:(NSString *)rightName;
+- (void)updateOutlineViewWithSelectionOfComboBox:(NSComboBox *)comboBox;
+@end
 
 @implementation RightsInspectorDelegate
 
@@ -159,7 +165,7 @@ Class NSAdminPreference = NULL;
 			// ask it for the appropriate System Preferences right
 			id adminPreference = [[NSAdminPreference alloc] init];
 			if ([adminPreference respondsToSelector:@selector(authorizationString)]) {
-				char *prefStr = (char *)[adminPreference authorizationString];
+				char *prefStr = (char *)[adminPreference performSelector:@selector(authorizationString)];
 				_systemPreferencesRight = [[NSString alloc] initWithUTF8String:prefStr];
 			}
 			[adminPreference release];
