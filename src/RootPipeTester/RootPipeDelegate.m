@@ -79,9 +79,10 @@
 		// Bye bye
 		if ([contextInfo isEqualToString:@"MainCloseShouldCleanUpDialog"]) {
 			[mainWindow close]; // won't show the dialog again
-		} else {
-			[NSApp stop:sheet]; // quit app
+		} else if ([contextInfo isEqualToString:@"TerminateShouldCleanUpDialog"]) {
+			[NSApp replyToApplicationShouldTerminate:YES]; // quit app
 		}
+		return;
 	}
 }
 
@@ -242,7 +243,7 @@
 
 - (NSApplicationTerminateReply)applicationShouldTerminate:(NSApplication *)sender {
 	// call clean up procedure because applicationShouldTerminate closes windows directly, so windowShouldClose: won't get called
-	return ([self mainWindowCanCloseTerminating:YES] ? NSTerminateNow : NSTerminateCancel);
+	return ([self mainWindowCanCloseTerminating:YES] ? NSTerminateNow : NSTerminateLater);
 }
 
 - (BOOL)applicationShouldTerminateAfterLastWindowClosed:(NSApplication *)application {
