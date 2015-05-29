@@ -129,11 +129,12 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 	
 	BOOL createFileResult = [tool createFileWithContents:FILE_CONTENTS path:testFile attributes:createFileAttributesDictionary];
 	
-	if (!createFileResult) {
+	if (createFileResult) {
+		sleep(2); //fixes false negatives on 10.9 --> https://github.com/sideeffect42/RootPipeTester/issues/1
+	} else {
 		printf("The tool indicates that writing the file \"%s\" failed.\n", testFileStr);
+		usleep(500000); //fixes false negatives on 10.9 --> https://github.com/sideeffect42/RootPipeTester/issues/1
 	}
-	
-	usleep((useAuth ? 5000 : 2500)); //fixes false negatives on 10.9 --> https://github.com/sideeffect42/RootPipeTester/issues/1 ; TODO test 10.10
 	
 	// Check if it worked
 	NSFileManager *fm = [NSFileManager defaultManager];
