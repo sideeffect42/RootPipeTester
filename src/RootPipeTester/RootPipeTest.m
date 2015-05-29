@@ -127,7 +127,16 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 													];
 	
 	
-	BOOL createFileResult = [tool createFileWithContents:FILE_CONTENTS path:testFile attributes:createFileAttributesDictionary];
+	BOOL createFileResult = YES;
+	NS_DURING
+		createFileResult = [tool createFileWithContents:FILE_CONTENTS path:testFile attributes:createFileAttributesDictionary];
+	NS_HANDLER
+		if ([localException isKindOfClass:[NSException class]]) {
+			fprintf(stderr, "An %s was raised while trying to write file: %s\n", ([[localException name] UTF8String] ?: "exception"), [[localException reason] UTF8String]);
+		} else {
+			fprintf(stderr, "An error occured while trying to write file.\n");
+		}
+	NS_ENDHANDLER
 	
 	if (createFileResult) {
 		sleep(2); //fixes false negatives on 10.9 --> https://github.com/sideeffect42/RootPipeTester/issues/1
