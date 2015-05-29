@@ -51,6 +51,7 @@
 }
 
 - (id)comboBox:(NSComboBox *)comboBox objectValueForItemAtIndex:(int)index {
+	if (index < 0 || (unsigned)index >= [_rights count]) return nil;
 	return [_rights objectAtIndex:index];
 }
 
@@ -203,6 +204,7 @@ Class NSAdminPreference = NULL;
 }
 
 - (NSDictionary *)rightDefinitionByName:(NSString *)name {
+	if (!name) return nil;
 	NSDictionary *rightDefinition = nil;
 	OSStatus (*rightget)(const char *, CFDictionaryRef *) = NULL;
 
