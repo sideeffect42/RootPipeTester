@@ -273,7 +273,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.2-legacy</string>
+	<string>1.0.3-legacy</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.2.8</string>
 	<key>NSMainNibFile</key>
