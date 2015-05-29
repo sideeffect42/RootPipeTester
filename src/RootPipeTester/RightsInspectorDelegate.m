@@ -2,6 +2,7 @@
 
 #define ORDER_RIGHTS_BY_NAME 1
 #define POLICY_DATABASE_FILE @"/private/etc/authorization"
+#define POLICY_DATABASE_FALLBACK_FILE @"/private/etc/authorization.deprecated"
 
 @implementation RPTKeyValuePair
 
@@ -177,10 +178,19 @@ Class NSAdminPreference = NULL;
 }
 
 - (BOOL)loadPolicyDBFromPath:(NSString *)path {
-	[_rightsDB release];
-	_rightsDB = [(([(_rightsDB = [NSDictionary dictionaryWithContentsOfFile:path]) objectForKey:@"rights"]) ?: _rightsDB) retain]; // 10.2.x doesn't have a rights subkey
+	NSDictionary *dict = (([(dict = [NSDictionary dictionaryWithContentsOfFile:path]) objectForKey:@"rights"]) ?: dict); // 10.2.x doesn't have a rights subkey
 	
-	return ([_rightsDB isKindOfClass:[NSDictionary class]] && [_rightsDB count] > 0);
+	if ([dict isKindOfClass:[NSDictionary class]] && [dict count] > 0) {
+		[_rightsDB release];
+		_rightsDB = [dict retain];
+		
+		[inspectorWindow setRepresentedFilename:path];
+		[inspectorWindow setTitleWithRepresentedFilename:path];
+		[inspectorWindow setTitle:[NSString stringWithFormat:@"%@ - Rights Inspector", [inspectorWindow title]]];
+		return YES;
+	}
+	
+	return NO;
 }
 
 - (void)windowDidBecomeKey:(NSNotification *)notification {
@@ -189,8 +199,8 @@ Class NSAdminPreference = NULL;
 	inspectorWindowHasInitialized = YES;
 	
 	// Load Policy Database
-	if (![self loadPolicyDBFromPath:POLICY_DATABASE_FILE]) { 
-		NSRunAlertPanel(@"Error", [NSString stringWithFormat:@"An error occurred while loading the Policy Database from \"%@\".", POLICY_DATABASE_FILE], nil, nil, nil);
+	if (![self loadPolicyDBFromPath:POLICY_DATABASE_FILE] && ![self loadPolicyDBFromPath:POLICY_DATABASE_FALLBACK_FILE]) {
+		NSRunAlertPanel(@"Error", [NSString stringWithFormat:@"An error occurred while loading the Policy Database from\n - \"%@\"\n - \"%@\".", POLICY_DATABASE_FILE, POLICY_DATABASE_FALLBACK_FILE], nil, nil, nil);
 		return;
 	}
 	
