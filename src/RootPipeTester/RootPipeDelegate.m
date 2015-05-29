@@ -69,6 +69,7 @@
 		} else {
 			[startButton setEnabled:YES];
 		}
+		return;
 	}
 	
 	if ([contextInfo isEqualToString:@"MainCloseShouldCleanUpDialog"] || [contextInfo isEqualToString:@"TerminateShouldCleanUpDialog"]) {

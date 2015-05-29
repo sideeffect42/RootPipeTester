@@ -268,7 +268,7 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 
 - (void)dealloc {
 	[_usedTestFiles release];
-	[_testFilesLock unlock];
+	[_testFilesLock release];
 	[super dealloc];
 }
 
