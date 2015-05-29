@@ -9,7 +9,6 @@
 /* Begin PBXBuildFile section */
 		8210D4141AE4FA4A0074CDBE /* RootPipeExploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */; };
 		8210D49E1AE513920074CDBE /* RootPipeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8210D49D1AE513920074CDBE /* RootPipeTest.m */; };
-		82287F731AF64F1000CFA966 /* Reload.tif in Resources */ = {isa = PBXBuildFile; fileRef = 82287F701AF64F1000CFA966 /* Reload.tif */; };
 		82287FF61AF95BD400CFA966 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 82287FF41AF95BD400CFA966 /* MainMenu.nib */; };
 		82583B991AE92688005120E4 /* RightsInspectorDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82583B971AE92688005120E4 /* RightsInspectorDelegate.m */; };
 		82583BEB1AE94D84005120E4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82583BEA1AE94D84005120E4 /* Security.framework */; };
@@ -35,7 +34,6 @@
 		8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeExploit.m; sourceTree = "<group>"; };
 		8210D49C1AE513920074CDBE /* RootPipeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootPipeTest.h; sourceTree = "<group>"; };
 		8210D49D1AE513920074CDBE /* RootPipeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeTest.m; sourceTree = "<group>"; };
-		82287F701AF64F1000CFA966 /* Reload.tif */ = {isa = PBXFileReference; lastKnownFileType = image.tiff; path = Reload.tif; sourceTree = "<group>"; };
 		82287FF51AF95BD400CFA966 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		82583B971AE92688005120E4 /* RightsInspectorDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightsInspectorDelegate.m; sourceTree = "<group>"; };
 		82583B981AE92688005120E4 /* RightsInspectorDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightsInspectorDelegate.h; sourceTree = "<group>"; };
@@ -135,7 +133,6 @@
 		29B97317FDCFA39411CA2CEA /* Resources */ = {
 			isa = PBXGroup;
 			children = (
-				82287F6F1AF64F1000CFA966 /* TemplateIcons */,
 				82CA3F231ADEB02600938120 /* RootPipeTester.icns */,
 				8D1107310486CEB800E47090 /* Info.plist */,
 				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
@@ -151,15 +148,6 @@
 				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
 			);
 			name = Frameworks;
-			sourceTree = "<group>";
-		};
-		82287F6F1AF64F1000CFA966 /* TemplateIcons */ = {
-			isa = PBXGroup;
-			children = (
-				82287F701AF64F1000CFA966 /* Reload.tif */,
-			);
-			name = TemplateIcons;
-			path = Resources/TemplateIcons;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -210,7 +198,6 @@
 			files = (
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				82CA3F241ADEB02600938120 /* RootPipeTester.icns in Resources */,
-				82287F731AF64F1000CFA966 /* Reload.tif in Resources */,
 				82287FF61AF95BD400CFA966 /* MainMenu.nib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

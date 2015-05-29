@@ -176,7 +176,6 @@
 		};
 		29B97317FDCFA39411CA2CEA = {
 			children = (
-				82EB2FB91AF791CE00A8000E,
 				29B97318FDCFA39411CA2CEA,
 				089C165CFE840E0CC02AAC07,
 				8278EAF71AFCF61B00A8000E,
@@ -301,7 +300,6 @@
 			files = (
 				080E96DCFE201CFB7F000001,
 				089C165EFE840E0CC02AAC07,
-				82EB2FBB1AF791CE00A8000E,
 				8278EAF81AFCF61B00A8000E,
 			);
 			isa = PBXResourcesBuildPhase;
@@ -498,26 +496,6 @@
 		};
 		8278EAF81AFCF61B00A8000E = {
 			fileRef = 8278EAF71AFCF61B00A8000E;
-			isa = PBXBuildFile;
-			settings = {
-			};
-		};
-		82EB2FB91AF791CE00A8000E = {
-			children = (
-				82EB2FBA1AF791CE00A8000E,
-			);
-			isa = PBXGroup;
-			name = TemplateIcons;
-			path = Resources/TemplateIcons;
-			refType = 4;
-		};
-		82EB2FBA1AF791CE00A8000E = {
-			isa = PBXFileReference;
-			path = Reload.tif;
-			refType = 4;
-		};
-		82EB2FBB1AF791CE00A8000E = {
-			fileRef = 82EB2FBA1AF791CE00A8000E;
 			isa = PBXBuildFile;
 			settings = {
 			};
