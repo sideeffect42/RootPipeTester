@@ -17,7 +17,7 @@
 	2. [Is it a backdoor?](#52-is-it-a-backdoor)
 
 ## 1. What is RootPipe Tester?
-RootPipe Tester is a small application that runs on your Mac (Mac OS X 10.3.9 or higher, both PowerPC and Intel) and tries to use the RootPipe Exploit ([CVE-2015-1130](http://www.cvedetails.com/cve/CVE-2015-1130/)) to produce a privilege escalation.
+RootPipe Tester is a small application that runs on your Mac (Mac OS X 10.2.8 or higher, both PowerPC and Intel) and tries to use the RootPipe Exploit ([CVE-2015-1130](http://www.cvedetails.com/cve/CVE-2015-1130/)) to produce a privilege escalation.
 
 ## 2. Why should I use RootPipe Tester?
 ### Can't you just make a list of vulnerable Mac OS versions?
@@ -112,7 +112,8 @@ Note: Jaguar does not lock secure preference panes when System Preferences quits
 
 Note: If you can't switch to a standard user account a simple AppleScript which locks secure preference panes as a Login Item could do the job.
 
-Note: RootPipe Tester will not run on Jaguar. I will provide a version for Jagaur soon.
+Note: The normal version of RootPipe Tester will not run on Jaguar. Download the Legacy version of RootPipe Tester if you want to run on Jaguar.  
+The Legacy version of RootPipe Tester is equivalent in functionality to the normal version, but is compiled using GCC 3.1 instead of GCC 4.0.
 
 Test results:
 
@@ -165,20 +166,24 @@ system.preferences on 10.5.8
     class = user;
     comment = "Checked by the Admin framework when making changes to certain System Preferences.";
     group = admin;
-    shared = 0;
+    shared = 1;
 }
 ```
 
-As you can see, it is a non-shared right. This means that if System Preferences did acquire this right (which will open the lock) it can do stuff it needs this right for, but no other process can.  
-This means that our RootPipe Tester will have to get authorized for himself and can't use the authorization of System Preferences, because they're different processes.  
-This is the reason, why standard users are normally safe (10.3.9 and lower are an exception because there it is a shared right).
+As you can see, it is a shared right. This means that once this right has been acquired by any process every other process can use it for as long as the session doesn't get destroyed (when you log out).  
+This by itself is not so bad, because you have to authorize the first time an application wants to use `system.preferences`, unfortunately the system automatically authorizes it automatically at login (for Administrator users).
+This means that our RootPipe Tester will not have to get authorized and can instead use the authorization of the system.
 
-Administrators will be vulnerable by default because the `SecurityServer` will automatically grant this right to every user of the group admin which all administrators are part of.
-
-I don't know the exact reason though, why checking "Require password to unlock each System Preferences pane" makes you safe. (_if you know, tell me!_)
+Standard users are safe, because the system doesn't authorize the `system.preferences` right at login.
 
 With the proper authorization acquired it's a pretty easy game to write config files (or any other file for that matter) with arbitrary rights.  
 `ToolLiaison` is happily going to set up an `NSDistantObject` to `writeconfig` for you and `writeconfig` will happily write the file for you, because in their mind, you have authorized yourself just fine.
+
+
+Checking the "Require password to unlock each System Preferences pane" checkbox in System Preferences fixes RootPipe on all versions of Mac OS X from 10.4 - 10.8.  
+Checking this checkbox will modify the `system.preferences` right and set `shared` to false.  
+If a right is not shared, this means that every process has to get its own authorization. Because getting authorization requires the user to enter the password of an Administrator the attack can be noticed by the user.
+Also, simply running `sudo` will have the same effect, which makes this attack useless.
 
 ### 5.2. Is it a backdoor?
 Not really. At first glance it might look like one, because it's in a PrivateFramework running as root and not doing proper authentication.
