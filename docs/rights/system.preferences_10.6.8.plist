@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>allow-root</key>
+	<true/>
+	<key>class</key>
+	<string>user</string>
+	<key>comment</key>
+	<string>Checked by the Admin framework when making changes to certain System Preferences.</string>
+	<key>group</key>
+	<string>admin</string>
+	<key>shared</key>
+	<true/>
+</dict>
+</plist>
