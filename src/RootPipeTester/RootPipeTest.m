@@ -99,7 +99,9 @@ static NSString * const FILE_PATH_FMT = @"/private/tmp/rootpipe_tester_%@.txt";
 	const char *testFileStr = [testFile UTF8String];
 	
 	// Unset fileAttr so that in case the system is not vulnerable, the dictionary will be empty as it should
-	if (*fileAttr) *fileAttr = nil;
+	if (fileAttr) {
+		*fileAttr = nil;
+	}
 	
 	printf("Running RootPipe Test %s user authorization\n", (useAuth ? "with" : "without"));
 	

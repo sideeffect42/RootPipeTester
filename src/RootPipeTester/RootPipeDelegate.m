@@ -96,6 +96,9 @@
 
 - (void)initiateAutomatedTestingRunnable { // should be run in a separate thread to avoid stalling
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSFileManager *fm = [NSFileManager defaultManager];
+	NSDictionary *fileAttributes = nil;
+	NSMutableSet *usedFiles = [NSMutableSet setWithCapacity:4];
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:RootPipeTestStarted object:NSApp];
 	
@@ -129,15 +132,13 @@
 	printf("\n");
 	
 	// Run tests
-	NSDictionary *fileAttributes = nil;
-	
 	
 	// [nil auth]
 	BOOL vulnerableWithoutAuth = [_rpTest runTestWithAuthorization:NO fileAttributes:&fileAttributes]; // nil auth test
 	if (vulnerableWithoutAuth) {
-		printf("\nYour system is vulnerable with nil authorization! (probably 10.9.0 - 10.10.2)\n");
+		printf("\nYour system is vulnerable against RootPipe using nil authorization! (probably 10.9.0 - 10.10.2)\n");
 	} else {
-		printf("\nYour system is not vulnerable with nil authorization. (probably 10.8 or older)\n");
+		printf("\nYour system is not vulnerable against RootPipe using nil authorization. (probably 10.8 or older)\n");
 	}
 	if (fileAttributes) {
 		printf("\nFile attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
@@ -149,16 +150,139 @@
 	// [user auth]
 	BOOL vulnerableWithAuth = [_rpTest runTestWithAuthorization:YES fileAttributes:&fileAttributes]; // user auth test
 	if (vulnerableWithAuth) {
-		printf("\nYour system is vulnerable with user authorization. Are you a \"Standard User\" or did you enter your password?\n");
+		printf("\nYour system is vulnerable agsinst RootPipe using user authorization. Are you a \"Standard User\" or did you enter your password?\n");
 	} else {
-		printf("\nYour system is not vulnerable using user authorization.\n");
+		printf("\nYour system is not vulnerable against RootPipe using user authorization.\n");
 	}
 	if (fileAttributes) {
 		printf("\nFile attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
 	}
 	// [/user auth]
 	
-	printf("\nTried to write the following files: %s\n", [[[[_rpTest usedTestFiles] allObjects] descriptionWithLocale:nil indent:1] UTF8String]);
+	[usedFiles unionSet:[_rpTest usedTestFiles]];
+
+	printf("\n\n");
+
+	static NSString * const kRPTTempDir = @"/private/tmp/RootPipeTester";
+	static NSString * const kDirUtilPathJaguar = @"/Applications/Utilities/Directory Access.app"; // TODO: verify if only Jaguar
+	static NSString * const kDirUtilPathOld = @"/Applications/Utilities/Directory Utility.app";
+	static NSString * const kDirUtilPathNew = @"/System/Library/CoreServices/Applications/Directory Utility.app";
+	static NSString * const kDirAccessPathDest = @"/private/tmp/RootPipeTester/Directory Access.app"; // path there Directory Access should be copied to
+	
+	// Prepare temp directory
+	BOOL tempFileIsDir = NO;
+	if (![fm fileExistsAtPath:kRPTTempDir isDirectory:&tempFileIsDir]) {
+		[fm createDirectoryAtPath:kRPTTempDir attributes:nil];
+	} else if (!tempFileIsDir) {
+		printf("Could not run Phoenix test because \"%s\" already exists.\n", [kRPTTempDir UTF8String]);
+		goto phoenixend;
+	}
+	[fm removeFileAtPath:kDirAccessPathDest handler:nil];
+
+	// Copy Directory Access to temp
+	BOOL dirAccessCopySuccess = NO;
+	
+	if ([fm fileExistsAtPath:kDirUtilPathNew] && [fm isExecutableFileAtPath:kDirUtilPathNew]) {
+		dirAccessCopySuccess = [fm copyPath:kDirUtilPathNew toPath:kDirAccessPathDest handler:nil];
+	} else if ([fm fileExistsAtPath:kDirUtilPathOld] && [fm isExecutableFileAtPath:kDirUtilPathOld]) {
+		dirAccessCopySuccess = [fm copyPath:kDirUtilPathOld toPath:kDirAccessPathDest handler:nil];
+	} else if ([fm fileExistsAtPath:kDirUtilPathJaguar] && [fm isExecutableFileAtPath:kDirUtilPathJaguar]) {
+		dirAccessCopySuccess = [fm copyPath:kDirUtilPathJaguar toPath:kDirAccessPathDest handler:nil];
+	} else {
+		printf("Could not find the \"Directory Access\" application on your system.\n");
+	}
+	
+	// Inject RPTDABundle
+	BOOL bundleCopySuccess = NO;
+	#define RPTDAPlugIn_BUNDLE_NAME @"RPTDAPlugIn.bundle"
+	NSString *bundlePath = ([[NSBundle bundleWithIdentifier:@"ch.maniswebdesign.RootPipeTester.RPTDAPlugIn"] bundlePath] ?:
+							[[[NSBundle mainBundle] resourcePath] stringByAppendingPathComponent:RPTDAPlugIn_BUNDLE_NAME]);
+	if (![fm fileExistsAtPath:bundlePath]) {
+		printf("Could not find %s.\n", [RPTDAPlugIn_BUNDLE_NAME UTF8String]);
+		goto phoenixend;
+	}
+	bundleCopySuccess = [fm copyPath:bundlePath toPath:[kDirAccessPathDest stringByAppendingString:@"/Contents/PlugIns/RPTDAPlugIn.daplug"] handler:nil];
+	
+	// Launch Directory Access from temp
+	if (!(dirAccessCopySuccess && bundleCopySuccess
+	 && [fm fileExistsAtPath:kDirAccessPathDest] 
+	 && [fm isExecutableFileAtPath:kDirAccessPathDest]
+	 && [[NSWorkspace sharedWorkspace] launchApplication:kDirAccessPathDest showIcon:NO autolaunch:NO]
+	)) {
+		printf("Could not launch Directory Access from \"%s\".\n", [kDirAccessPathDest UTF8String]);
+	}
+	
+	// Get Remote Connection
+	#define HELPER_CONN_TIMEOUT 40 // seconds
+	#define HELPER_CONN_INTERVAL 250000 // microseconds
+	#define HELPER_CONN_TRIES (HELPER_CONN_TIMEOUT*1000000/HELPER_CONN_INTERVAL)
+	printf("Waiting for connection to Directory Access...\n");
+	RPTDAPlugIn /*NSDistantObject*/ *phoenixConn = nil;
+	short i = 0;
+	NS_DURING
+		while (!(phoenixConn = (RPTDAPlugIn *)[NSConnection rootProxyForConnectionWithRegisteredName:@"RPTDAPlugIn-Connection" host:nil]) && (++i) < HELPER_CONN_TRIES) {
+			printf(".");
+			usleep(HELPER_CONN_INTERVAL);
+		}
+	NS_HANDLER
+		fprintf(stderr, "\nAn error occurred while waiting for a connection to Directory Access: %s\n", [[localException description] UTF8String]);
+	NS_ENDHANDLER
+
+	printf("\n");
+	
+	short connDelay = (i*HELPER_CONN_INTERVAL/1000000);
+	if (!phoenixConn) {
+		printf("Could not get a connection to Directory Access after %d seconds.\n", connDelay);
+		goto phoenixend;
+	} else printf("Got a connection to Directory Access after %d seconds.\n", connDelay);
+	
+	printf("\n");
+	
+	// [phoenix - nil auth]
+	NS_DURING
+		BOOL vulnerableWithoutPhoenixAuth = [phoenixConn runTestWithAuthorization:NO fileAttributes:&fileAttributes throughShim:&pipe]; // phoenix nil auth test
+		if (vulnerableWithoutPhoenixAuth) {
+			printf("\nYour system is vulnerable against Phoenix using nil authorization! (probably 10.9 - 10.10.3)\n");
+		} else {
+			printf("\nYour system is not vulnerable against Phoenix using nil authorization.\n");
+		}
+		if (fileAttributes) {
+			printf("\nFile attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
+		}
+	NS_HANDLER
+		fprintf(stderr, "An error occurred while testing against Phoenix using nil authorization: %s\n", [[localException description] UTF8String]);
+	NS_ENDHANDLER
+	// [/phoenix - nil auth]
+	
+	printf("\n");
+	
+	// [phoenix - user auth]
+	NS_DURING
+		BOOL vulnerableWithPhoenixAuth = [phoenixConn runTestWithAuthorization:YES fileAttributes:&fileAttributes throughShim:&pipe]; // phoenix user auth test
+		if (vulnerableWithPhoenixAuth) {
+			printf("\nYour system is vulnerable against Phoenix using user authorization. (probably 10.10.3 or older)\n");
+		} else {
+			printf("\nYour system is not vulnerable against Phoenix using user authorization.\n");
+		}
+		if (fileAttributes) {
+			printf("\nFile attributes: %s\n", [[fileAttributes descriptionWithLocale:nil indent:1] UTF8String]);
+		}
+	NS_HANDLER
+		fprintf(stderr, "An error occurred while testing against Phoenix using user authorization: %s\n", [[localException description] UTF8String]);
+	NS_ENDHANDLER
+	// [/phoenix - user auth]
+		
+	NS_DURING
+		[usedFiles unionSet:[[phoenixConn test] usedTestFiles]];
+		[phoenixConn performSelector:@selector(finishTesting)];
+	NS_HANDLER
+		fprintf(stderr, "An error occurred while trying to finish Phoenix test: %s\n", [[localException description] UTF8String]);
+	NS_ENDHANDLER
+	
+phoenixend:
+	// [/phoenix test]
+	
+	printf("\nTried to write the following files: %s\n", [[[usedFiles allObjects] descriptionWithLocale:nil indent:1] UTF8String]);
 	
 	// Test finished
 	printf("\nTest finished.\n");

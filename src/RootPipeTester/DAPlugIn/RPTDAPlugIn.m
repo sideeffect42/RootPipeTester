@@ -24,10 +24,16 @@
 
 @interface RPTDAPlugIn (PrivateMethods)
 	- (id)privateInit;
+	- (void)redirectOutput:(NSNotification *)aNotification;
+	+ (void)resetTimeout;
+	+ (void)pauseTimeout;
+	+ (void)quitUtility;
 @end
 
 @implementation RPTDAPlugIn
-RPTDAPlugIn *plugin;
+static RPTDAPlugIn *plugin = nil;
+static NSLock *timerLock = nil;
+static NSTimer *timeoutTimer = nil;
 
 + (void)initialize {
 	NSLog(@"Initialising RPTDAPlugIn...");
@@ -37,8 +43,31 @@ RPTDAPlugIn *plugin;
 	GetCurrentProcess(&psn);
 	ShowHideProcess(&psn, false);
 	
-	// Run Test
-	plugin = [[RPTDAPlugIn alloc] privateInit];
+	// Initialise statics
+	timerLock = [NSLock new];
+	plugin = [[RPTDAPlugIn alloc] privateInit]; // should initialise timeoutTimer
+}
+
++ (void)resetTimeout {
+	// Delete old timer
+	[self pauseTimeout];
+
+	[timerLock lock];
+
+	// Instantiate timeout timer
+	timeoutTimer = [NSTimer scheduledTimerWithTimeInterval:HELPER_IDLE_TIMEOUT
+													target:self
+												  selector:@selector(quitUtility)
+												  userInfo:nil
+												   repeats:NO];
+	
+	[timerLock unlock];
+}
++ (void)pauseTimeout {
+	[timerLock lock];
+		[timeoutTimer invalidate];
+		timeoutTimer = nil;
+	[timerLock unlock];
 }
 
 - (id)init {
@@ -46,61 +75,102 @@ RPTDAPlugIn *plugin;
 }
 
 - (id)privateInit {
+	if (plugin) return plugin;
+	
+	// Instantiate new PlugIn
 	if ((self = [super init])) {
+		// Initialise timer
+		timerLock = [NSLock new];
+		[[self class] resetTimeout];
+		
+		// Initialise ivars
 		_rpTest = [[RootPipeTest alloc] init];
+		_localPipe = [[NSPipe pipe] retain];
+		
+		// Redirect stdout and stderr to _localPipe
+		setvbuf(stdout, NULL, _IONBF /* No Buffering */, BUFSIZ);
+		setvbuf(stderr, NULL, _IONBF /* No Buffering */, BUFSIZ);
+		dup2([[_localPipe fileHandleForWriting] fileDescriptor], fileno(stdout)); // redirect stdout to _localPipe
+		dup2([[_localPipe fileHandleForWriting] fileDescriptor], fileno(stderr)); // redirect stderr to _localPipe
+		[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(redirectOutput:) name:NSFileHandleDataAvailableNotification object:[_localPipe fileHandleForReading]];
+		[[_localPipe fileHandleForReading] performSelectorOnMainThread:@selector(waitForDataInBackgroundAndNotify) withObject:nil waitUntilDone:NO];
 		
 		// Initialise connection
 		_connection = [NSConnection defaultConnection];
 		[_connection registerName:@"RPTDAPlugIn-Connection"];
 		[_connection setRootObject:self];
+		
+		[self runTestWithAuthorization:YES fileAttributes:nil throughShim:nil];
 	}
-	return self;
+	return (plugin = self);
+}
+
+- (void)redirectOutput:(NSNotification *)aNotification {
+	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+	NSFileHandle *fh = (NSFileHandle *)[aNotification object];
+	NSData *data;
+	
+	NS_DURING
+		if ([[aNotification name] isEqualToString:NSFileHandleDataAvailableNotification]) {
+			[fh performSelectorOnMainThread:@selector(waitForDataInBackgroundAndNotify) withObject:nil waitUntilDone:NO];
+			data = [fh availableData];
+			
+			if ([data length] == 0) {
+				// File Handle reached EOF, let's unsubscribe from it's notifications to avoid having permanent notifications.
+				[[NSNotificationCenter defaultCenter] removeObserver:self name:nil object:fh];
+			}
+		} else return;
+	NS_HANDLER
+		return;
+	NS_ENDHANDLER
+	
+	// Redirect output to _proxyPipe
+	[[_proxyPipe fileHandleForWriting] writeData:data];
+	
+	[pool release];
 }
 
 - (RootPipeTest *)test {
+	[[self class] resetTimeout];
 	return _rpTest;
 }
 
 - (BOOL)runTestWithAuthorization:(BOOL)useAuth fileAttributes:(NSDictionary **)fileAttr throughShim:(NSPipe **)pipeRef {
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
-	NSPipe *pipe = (*pipeRef);
-
-	// Redirect stdout and stderr to output
-	int oldStdOut = dup(fileno(stdout)); // make a copy of the old outs to restore later
-	int oldStdErr = dup(fileno(stderr));
+	[[self class] pauseTimeout];
 	
-	setvbuf(stdout, NULL, _IONBF /* No Buffering */, BUFSIZ);
-	setvbuf(stderr, NULL, _IONBF /* No Buffering */, BUFSIZ);
-	
-	NSFileHandle *pipeHandle = [pipe fileHandleForReading];
-	dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stdout)); // redirect stdout to pipe
-	dup2([[pipe fileHandleForWriting] fileDescriptor], fileno(stderr)); // redirect stderr to pipe
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextView:) name:NSFileHandleReadCompletionNotification object:pipeHandle];
-	[[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(updateTextView:) name:NSFileHandleDataAvailableNotification object:pipeHandle];
-	[pipeHandle performSelectorOnMainThread:@selector(waitForDataInBackgroundAndNotify) withObject:nil waitUntilDone:NO]; //Respects no buffer setting from above (current thread has no RunLoop, so we need to call on MainTread)!!
+	if (pipeRef) _proxyPipe = (*pipeRef);
 	
 	BOOL testResult = [_rpTest runTestWithAuthorization:useAuth fileAttributes:fileAttr];
-	
-	// Restore stdout and stderr
-	fflush(stdout);
-	dup2(oldStdOut, fileno(stdout));
-	close(oldStdOut);
-	fflush(stderr);
-	dup2(oldStdErr, fileno(stderr));
-	close(oldStdErr);
 
+	printf(" ");
+	[[NSNotificationCenter defaultCenter] postNotificationName:NSFileHandleDataAvailableNotification object:[_localPipe fileHandleForReading] userInfo:nil];
+
+	[[self class] resetTimeout];
 	[pool release];
 	return testResult;
 }
 
-- (void)quitHelper {
++ (void)finishTesting {
 	[plugin release];
+	[timerLock release];
+	
+	[NSTimer scheduledTimerWithTimeInterval:0.01 target:self selector:@selector(quitUtility) userInfo:nil repeats:NO];
+}
+- (void)finishTesting {
+	[[self class] finishTesting];
+}
+
++ (void)quitUtility {
 	[NSApp terminate:self];
 	[NSApp stop:self];
 }
 
 - (void)dealloc {
 	[_rpTest release];
+	[_localPipe release];
+	[_connection invalidate];
+	[_connection release];
 	[super dealloc];
 }
 @end

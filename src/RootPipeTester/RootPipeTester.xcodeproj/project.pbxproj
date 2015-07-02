@@ -107,7 +107,6 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
-				8210FE381B451E80004E2BB5 /* DAPlugIn */,
 				82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */,
 				82B6ECED1AD903CA00BFBAA2 /* RootPipeDelegate.h */,
 				8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */,
@@ -154,17 +153,12 @@
 		29B97314FDCFA39411CA2CEA /* RootPipeTester */ = {
 			isa = PBXGroup;
 			children = (
-				8210FE501B451FE6004E2BB5 /* Admin.framework */,
+				821F98841B4881D700205B4F /* RPTDAPlugIn */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
-				8210FE4A1B451F68004E2BB5 /* RPTDAPlugIn-Info.plist */,
-				8210FE4E1B451FC3004E2BB5 /* Cocoa.framework */,
-				8210FE521B451FF6004E2BB5 /* PreferencePanes.framework */,
-				8210FE541B451FFE004E2BB5 /* Security.framework */,
-				8210FE561B451FFE004E2BB5 /* SecurityFoundation.framework */,
 			);
 			name = RootPipeTester;
 			sourceTree = "<group>";
@@ -198,13 +192,43 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
-		8210FE381B451E80004E2BB5 /* DAPlugIn */ = {
+		821F98841B4881D700205B4F /* RPTDAPlugIn */ = {
+			isa = PBXGroup;
+			children = (
+				821F98851B4881EE00205B4F /* Classes */,
+				821F98891B48822C00205B4F /* Resources */,
+				821F98861B48820300205B4F /* Frameworks */,
+			);
+			name = RPTDAPlugIn;
+			sourceTree = "<group>";
+		};
+		821F98851B4881EE00205B4F /* Classes */ = {
 			isa = PBXGroup;
 			children = (
 				8210FE3A1B451EAF004E2BB5 /* RPTDAPlugIn.m */,
 				8210FE391B451EAF004E2BB5 /* RPTDAPlugIn.h */,
 			);
-			name = DAPlugIn;
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		821F98861B48820300205B4F /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				8210FE4E1B451FC3004E2BB5 /* Cocoa.framework */,
+				8210FE521B451FF6004E2BB5 /* PreferencePanes.framework */,
+				8210FE541B451FFE004E2BB5 /* Security.framework */,
+				8210FE561B451FFE004E2BB5 /* SecurityFoundation.framework */,
+				8210FE501B451FE6004E2BB5 /* Admin.framework */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		821F98891B48822C00205B4F /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				8210FE4A1B451F68004E2BB5 /* RPTDAPlugIn-Info.plist */,
+			);
+			name = Resources;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -301,7 +325,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = "/usr/bin/env bash";
-			shellScript = "function alert {\n\tosascript -e \"tell application \\\"Xcode\\\" to display alert \\\"$1\\\"\" > /dev/null\n}\n\nTMP_DIR=\"/private/tmp/RPT-Debug\"\n\n# Ask the user if he intends to debug\nSHOULD_DEBUG=$(osascript -e \"tell application \\\"Xcode\\\" to display dialog \\\"Prepare $TARGET_NAME for debugging in Xcode?\\nClick yes if you are planning to debug this build in Xcode. Otherwise click No.\\\" buttons {\\\"Cancel\\\", \\\"Yes\\\"} default button \\\"Cancel\\\"\"|sed -e 's/.*button returned://' -e 's/,.*//')\n\nif [ \"$SHOULD_DEBUG\" = \"Yes\" ]; then\t\n\t# Prepare Directory Utility for debugging with custom executable\n\t\n\tDABUNDLE_NAME=\"${FULL_PRODUCT_NAME:?}\"\n\tDABUNDLE_PATH=\"${TARGET_BUILD_DIR:?}/${DABUNDLE_NAME:?}\"\n\n\tif [ ! -d $DABUNDLE_PATH ]; then \n\t\talert \"Cannot find DAPlugin.bundle at \\\"$DABUNDLE_PATH\\\"\"\n\t\texit 1\n\tfi\n\n\techo \"Refreshing ${TMP_DIR}...\"\n\tif [ -e ${TMP_DIR:?} ]; then rm -r ${TMP_DIR:?}; fi\n\tmkdir ${TMP_DIR:?}\n\n\techo \"Copying \\\"Directory Utility.app\\\" to ${TMP_DIR} and add ${DABUNDLE_NAME}...\"\n\tcp -r /Applications/Utilities/Directory\\ Utility.app ${TMP_DIR:?}/Directory\\ Utility.app\n\tcp -r ${DABUNDLE_PATH:?}/ ${TMP_DIR:?}/Directory\\ Utility.app/Contents/PlugIns/RootPipeTester.daplug\n\n\techo \"Done\"\nfi";
+			shellScript = "function alert {\n\tosascript -e \"tell application \\\"Xcode\\\" to display alert \\\"$1\\\"\" > /dev/null\n}\n\nTMP_DIR=\"/private/tmp/RPT-Debug\"\n\n# Ask the user if he intends to debug\nSHOULD_DEBUG=$(osascript -e \"tell application \\\"Xcode\\\" to display dialog \\\"Prepare $TARGET_NAME for debugging in Xcode?\\nClick yes if you are planning to debug this build in Xcode. Otherwise click No.\\\" buttons {\\\"Skip\\\", \\\"Yes\\\"} default button \\\"Skip\\\"\"|sed -e 's/.*button returned://' -e 's/,.*//')\n\nif [ \"$SHOULD_DEBUG\" = \"Yes\" ]; then\t\n\t# Prepare Directory Utility for debugging with custom executable\n\t\n\tDABUNDLE_NAME=\"${FULL_PRODUCT_NAME:?}\"\n\tDABUNDLE_PATH=\"${TARGET_BUILD_DIR:?}/${DABUNDLE_NAME:?}\"\n\n\tif [ ! -d $DABUNDLE_PATH ]; then \n\t\talert \"Cannot find DAPlugin.bundle at \\\"$DABUNDLE_PATH\\\"\"\n\t\texit 1\n\tfi\n\n\techo \"Refreshing ${TMP_DIR}...\"\n\tif [ -e ${TMP_DIR:?} ]; then rm -r ${TMP_DIR:?}; fi\n\tmkdir ${TMP_DIR:?}\n\n\techo \"Copying \\\"Directory Utility.app\\\" to ${TMP_DIR} and add ${DABUNDLE_NAME}...\"\n\tif [ -d \"/Applications/Utilities/Directory Utility.app\" ]; then\n\t\tcp -r /Applications/Utilities/Directory\\ Utility.app ${TMP_DIR:?}/Directory\\ Utility.app\n\telse\n\t\tif [ -d \"/System/Library/CoreServices/Applications/Directory Utility.app\" ]; then\n\t\t\tcp -r /System/Library/CoreServices/Applications/Directory\\ Utility.app ${TMP_DIR:?}/Directory\\ Utility.app\n\t\telse\n\t\t\texit 1;\n\t\tfi\n\tfi\n\tcp -r ${DABUNDLE_PATH:?}/ ${TMP_DIR:?}/Directory\\ Utility.app/Contents/PlugIns/RootPipeTester.daplug\n\n\techo \"Done\"\nfi\n\nexit 0";
 		};
 /* End PBXShellScriptBuildPhase section */
 

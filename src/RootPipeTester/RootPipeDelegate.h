@@ -23,6 +23,7 @@
 #include <unistd.h>
 #import <Cocoa/Cocoa.h>
 #import "RootPipeTest.h"
+#import "RPTDAPlugIn.h"
 
 @interface RootPipeDelegate : NSObject {
     IBOutlet NSWindow *mainWindow;

@@ -21,18 +21,24 @@
 //
 
 #import <Foundation/Foundation.h>
-
 #import "RootPipeTest.h"
+
+#define HELPER_IDLE_TIMEOUT (NSTimeInterval) 20.0 /* seconds */
 
 @interface RPTDAPlugIn : NSObject {
 	RootPipeTest *_rpTest;
 	
 	@private
 	NSConnection *_connection;
+	NSPipe *_proxyPipe;
+	NSPipe *_localPipe;
 }
+
+// no init available. This class will initialise itself.
 
 - (RootPipeTest *)test;
 - (BOOL)runTestWithAuthorization:(BOOL)useAuth fileAttributes:(NSDictionary **)fileAttr throughShim:(NSPipe **)pipeRef;
-- (void)quitHelper;
++ (void)finishTesting;
+- (void)finishTesting; // same as +finishTesting
 
 @end
