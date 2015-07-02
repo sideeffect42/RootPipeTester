@@ -9,7 +9,16 @@
 /* Begin PBXBuildFile section */
 		8210D4141AE4FA4A0074CDBE /* RootPipeExploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */; };
 		8210D49E1AE513920074CDBE /* RootPipeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8210D49D1AE513920074CDBE /* RootPipeTest.m */; };
+		8210FE4F1B451FC3004E2BB5 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8210FE4E1B451FC3004E2BB5 /* Cocoa.framework */; };
+		8210FE511B451FE6004E2BB5 /* Admin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8210FE501B451FE6004E2BB5 /* Admin.framework */; };
+		8210FE531B451FF6004E2BB5 /* PreferencePanes.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8210FE521B451FF6004E2BB5 /* PreferencePanes.framework */; };
+		8210FE551B451FFE004E2BB5 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8210FE541B451FFE004E2BB5 /* Security.framework */; };
+		8210FE571B451FFE004E2BB5 /* SecurityFoundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8210FE561B451FFE004E2BB5 /* SecurityFoundation.framework */; };
+		8210FE6F1B452444004E2BB5 /* RPTDAPlugIn.m in Sources */ = {isa = PBXBuildFile; fileRef = 8210FE3A1B451EAF004E2BB5 /* RPTDAPlugIn.m */; };
+		8210FE8A1B452721004E2BB5 /* RootPipeTest.m in Sources */ = {isa = PBXBuildFile; fileRef = 8210D49D1AE513920074CDBE /* RootPipeTest.m */; };
+		8210FE8B1B452738004E2BB5 /* RootPipeExploit.m in Sources */ = {isa = PBXBuildFile; fileRef = 8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */; };
 		82287FF61AF95BD400CFA966 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 82287FF41AF95BD400CFA966 /* MainMenu.nib */; };
+		8253650E1B455499000D600B /* RPTDAPlugIn.bundle in Resources */ = {isa = PBXBuildFile; fileRef = 8210FE491B451F68004E2BB5 /* RPTDAPlugIn.bundle */; };
 		82583B991AE92688005120E4 /* RightsInspectorDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 82583B971AE92688005120E4 /* RightsInspectorDelegate.m */; };
 		82583BEB1AE94D84005120E4 /* Security.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82583BEA1AE94D84005120E4 /* Security.framework */; };
 		82B6ED361AD90AD600BFBAA2 /* Admin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 82B6ED351AD90AD600BFBAA2 /* Admin.framework */; };
@@ -21,6 +30,16 @@
 		8D11072D0486CEB800E47090 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
 		8D11072F0486CEB800E47090 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
 /* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		825364FB1B455257000D600B /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 29B97313FDCFA39411CA2CEA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 8210FE481B451F68004E2BB5;
+			remoteInfo = DAPlugIn;
+		};
+/* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
 		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -34,6 +53,15 @@
 		8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeExploit.m; sourceTree = "<group>"; };
 		8210D49C1AE513920074CDBE /* RootPipeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootPipeTest.h; sourceTree = "<group>"; };
 		8210D49D1AE513920074CDBE /* RootPipeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeTest.m; sourceTree = "<group>"; };
+		8210FE391B451EAF004E2BB5 /* RPTDAPlugIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RPTDAPlugIn.h; path = DAPlugIn/RPTDAPlugIn.h; sourceTree = "<group>"; };
+		8210FE3A1B451EAF004E2BB5 /* RPTDAPlugIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RPTDAPlugIn.m; path = DAPlugIn/RPTDAPlugIn.m; sourceTree = "<group>"; };
+		8210FE491B451F68004E2BB5 /* RPTDAPlugIn.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RPTDAPlugIn.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
+		8210FE4A1B451F68004E2BB5 /* RPTDAPlugIn-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RPTDAPlugIn-Info.plist"; sourceTree = "<group>"; };
+		8210FE4E1B451FC3004E2BB5 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
+		8210FE501B451FE6004E2BB5 /* Admin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Admin.framework; path = /System/Library/PrivateFrameworks/Admin.framework; sourceTree = "<absolute>"; };
+		8210FE521B451FF6004E2BB5 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = System/Library/Frameworks/PreferencePanes.framework; sourceTree = SDKROOT; };
+		8210FE541B451FFE004E2BB5 /* Security.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Security.framework; path = System/Library/Frameworks/Security.framework; sourceTree = SDKROOT; };
+		8210FE561B451FFE004E2BB5 /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = System/Library/Frameworks/SecurityFoundation.framework; sourceTree = SDKROOT; };
 		82287FF51AF95BD400CFA966 /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
 		82583B971AE92688005120E4 /* RightsInspectorDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RightsInspectorDelegate.m; sourceTree = "<group>"; };
 		82583B981AE92688005120E4 /* RightsInspectorDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RightsInspectorDelegate.h; sourceTree = "<group>"; };
@@ -49,6 +77,18 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		8210FE471B451F68004E2BB5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8210FE4F1B451FC3004E2BB5 /* Cocoa.framework in Frameworks */,
+				8210FE511B451FE6004E2BB5 /* Admin.framework in Frameworks */,
+				8210FE531B451FF6004E2BB5 /* PreferencePanes.framework in Frameworks */,
+				8210FE551B451FFE004E2BB5 /* Security.framework in Frameworks */,
+				8210FE571B451FFE004E2BB5 /* SecurityFoundation.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072E0486CEB800E47090 /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -67,6 +107,7 @@
 		080E96DDFE201D6D7F000001 /* Classes */ = {
 			isa = PBXGroup;
 			children = (
+				8210FE381B451E80004E2BB5 /* DAPlugIn */,
 				82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */,
 				82B6ECED1AD903CA00BFBAA2 /* RootPipeDelegate.h */,
 				8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */,
@@ -105,6 +146,7 @@
 			isa = PBXGroup;
 			children = (
 				8D1107320486CEB800E47090 /* RootPipeTester.app */,
+				8210FE491B451F68004E2BB5 /* RPTDAPlugIn.bundle */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -112,11 +154,17 @@
 		29B97314FDCFA39411CA2CEA /* RootPipeTester */ = {
 			isa = PBXGroup;
 			children = (
+				8210FE501B451FE6004E2BB5 /* Admin.framework */,
 				080E96DDFE201D6D7F000001 /* Classes */,
 				29B97315FDCFA39411CA2CEA /* Other Sources */,
 				29B97317FDCFA39411CA2CEA /* Resources */,
 				29B97323FDCFA39411CA2CEA /* Frameworks */,
 				19C28FACFE9D520D11CA2CBB /* Products */,
+				8210FE4A1B451F68004E2BB5 /* RPTDAPlugIn-Info.plist */,
+				8210FE4E1B451FC3004E2BB5 /* Cocoa.framework */,
+				8210FE521B451FF6004E2BB5 /* PreferencePanes.framework */,
+				8210FE541B451FFE004E2BB5 /* Security.framework */,
+				8210FE561B451FFE004E2BB5 /* SecurityFoundation.framework */,
 			);
 			name = RootPipeTester;
 			sourceTree = "<group>";
@@ -150,9 +198,36 @@
 			name = Frameworks;
 			sourceTree = "<group>";
 		};
+		8210FE381B451E80004E2BB5 /* DAPlugIn */ = {
+			isa = PBXGroup;
+			children = (
+				8210FE3A1B451EAF004E2BB5 /* RPTDAPlugIn.m */,
+				8210FE391B451EAF004E2BB5 /* RPTDAPlugIn.h */,
+			);
+			name = DAPlugIn;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
+		8210FE481B451F68004E2BB5 /* RPTDAPlugIn */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 8210FE4D1B451F6E004E2BB5 /* Build configuration list for PBXNativeTarget "RPTDAPlugIn" */;
+			buildPhases = (
+				8210FE451B451F68004E2BB5 /* Resources */,
+				8210FE461B451F68004E2BB5 /* Sources */,
+				8210FE471B451F68004E2BB5 /* Frameworks */,
+				8210FEBF1B452BF7004E2BB5 /* ShellScript */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = RPTDAPlugIn;
+			productName = DAPlugIn;
+			productReference = 8210FE491B451F68004E2BB5 /* RPTDAPlugIn.bundle */;
+			productType = "com.apple.product-type.bundle";
+		};
 		8D1107260486CEB800E47090 /* RootPipeTester */ = {
 			isa = PBXNativeTarget;
 			buildConfigurationList = C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "RootPipeTester" */;
@@ -164,6 +239,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				825364FC1B455257000D600B /* PBXTargetDependency */,
 			);
 			name = RootPipeTester;
 			productInstallPath = "$(HOME)/Applications";
@@ -187,11 +263,19 @@
 			projectRoot = "";
 			targets = (
 				8D1107260486CEB800E47090 /* RootPipeTester */,
+				8210FE481B451F68004E2BB5 /* RPTDAPlugIn */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		8210FE451B451F68004E2BB5 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D1107290486CEB800E47090 /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -199,12 +283,39 @@
 				8D11072B0486CEB800E47090 /* InfoPlist.strings in Resources */,
 				82CA3F241ADEB02600938120 /* RootPipeTester.icns in Resources */,
 				82287FF61AF95BD400CFA966 /* MainMenu.nib in Resources */,
+				8253650E1B455499000D600B /* RPTDAPlugIn.bundle in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
+/* Begin PBXShellScriptBuildPhase section */
+		8210FEBF1B452BF7004E2BB5 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = "/usr/bin/env bash";
+			shellScript = "function alert {\n\tosascript -e \"tell application \\\"Xcode\\\" to display alert \\\"$1\\\"\" > /dev/null\n}\n\nTMP_DIR=\"/private/tmp/RPT-Debug\"\n\n# Ask the user if he intends to debug\nSHOULD_DEBUG=$(osascript -e \"tell application \\\"Xcode\\\" to display dialog \\\"Prepare $TARGET_NAME for debugging in Xcode?\\nClick yes if you are planning to debug this build in Xcode. Otherwise click No.\\\" buttons {\\\"Cancel\\\", \\\"Yes\\\"} default button \\\"Cancel\\\"\"|sed -e 's/.*button returned://' -e 's/,.*//')\n\nif [ \"$SHOULD_DEBUG\" = \"Yes\" ]; then\t\n\t# Prepare Directory Utility for debugging with custom executable\n\t\n\tDABUNDLE_NAME=\"${FULL_PRODUCT_NAME:?}\"\n\tDABUNDLE_PATH=\"${TARGET_BUILD_DIR:?}/${DABUNDLE_NAME:?}\"\n\n\tif [ ! -d $DABUNDLE_PATH ]; then \n\t\talert \"Cannot find DAPlugin.bundle at \\\"$DABUNDLE_PATH\\\"\"\n\t\texit 1\n\tfi\n\n\techo \"Refreshing ${TMP_DIR}...\"\n\tif [ -e ${TMP_DIR:?} ]; then rm -r ${TMP_DIR:?}; fi\n\tmkdir ${TMP_DIR:?}\n\n\techo \"Copying \\\"Directory Utility.app\\\" to ${TMP_DIR} and add ${DABUNDLE_NAME}...\"\n\tcp -r /Applications/Utilities/Directory\\ Utility.app ${TMP_DIR:?}/Directory\\ Utility.app\n\tcp -r ${DABUNDLE_PATH:?}/ ${TMP_DIR:?}/Directory\\ Utility.app/Contents/PlugIns/RootPipeTester.daplug\n\n\techo \"Done\"\nfi";
+		};
+/* End PBXShellScriptBuildPhase section */
+
 /* Begin PBXSourcesBuildPhase section */
+		8210FE461B451F68004E2BB5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				8210FE6F1B452444004E2BB5 /* RPTDAPlugIn.m in Sources */,
+				8210FE8A1B452721004E2BB5 /* RootPipeTest.m in Sources */,
+				8210FE8B1B452738004E2BB5 /* RootPipeExploit.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		8D11072C0486CEB800E47090 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -218,6 +329,14 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		825364FC1B455257000D600B /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 8210FE481B451F68004E2BB5 /* RPTDAPlugIn */;
+			targetProxy = 825364FB1B455257000D600B /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
 
 /* Begin PBXVariantGroup section */
 		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
@@ -239,6 +358,65 @@
 /* End PBXVariantGroup section */
 
 /* Begin XCBuildConfiguration section */
+		8210FE4B1B451F6D004E2BB5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
+				);
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_MODEL_TUNING = G5;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "RPTDAPlugIn-Info.plist";
+				INSTALL_PATH = /tmp;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = RPTDAPlugIn;
+				WRAPPER_EXTENSION = bundle;
+			};
+			name = Debug;
+		};
+		8210FE4C1B451F6D004E2BB5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				COPY_PHASE_STRIP = YES;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"",
+				);
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_MODEL_TUNING = G5;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				INFOPLIST_FILE = "RPTDAPlugIn-Info.plist";
+				INSTALL_PATH = /tmp;
+				MACH_O_TYPE = mh_bundle;
+				OTHER_LDFLAGS = (
+					"-framework",
+					Foundation,
+					"-framework",
+					AppKit,
+				);
+				PREBINDING = NO;
+				PRODUCT_NAME = RPTDAPlugIn;
+				WRAPPER_EXTENSION = bundle;
+				ZERO_LINK = NO;
+			};
+			name = Release;
+		};
 		C01FCF4B08A954540054247B /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -330,6 +508,15 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		8210FE4D1B451F6E004E2BB5 /* Build configuration list for PBXNativeTarget "RPTDAPlugIn" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				8210FE4B1B451F6D004E2BB5 /* Debug */,
+				8210FE4C1B451F6D004E2BB5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		C01FCF4A08A954540054247B /* Build configuration list for PBXNativeTarget "RootPipeTester" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
