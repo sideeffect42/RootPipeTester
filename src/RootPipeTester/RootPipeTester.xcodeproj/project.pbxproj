@@ -53,10 +53,10 @@
 		8210D4131AE4FA4A0074CDBE /* RootPipeExploit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeExploit.m; sourceTree = "<group>"; };
 		8210D49C1AE513920074CDBE /* RootPipeTest.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RootPipeTest.h; sourceTree = "<group>"; };
 		8210D49D1AE513920074CDBE /* RootPipeTest.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeTest.m; sourceTree = "<group>"; };
-		8210FE391B451EAF004E2BB5 /* RPTDAPlugIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RPTDAPlugIn.h; path = DAPlugIn/RPTDAPlugIn.h; sourceTree = "<group>"; };
-		8210FE3A1B451EAF004E2BB5 /* RPTDAPlugIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RPTDAPlugIn.m; path = DAPlugIn/RPTDAPlugIn.m; sourceTree = "<group>"; };
+		8210FE391B451EAF004E2BB5 /* RPTDAPlugIn.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RPTDAPlugIn.h; path = RPTDAPlugIn/RPTDAPlugIn.h; sourceTree = "<group>"; };
+		8210FE3A1B451EAF004E2BB5 /* RPTDAPlugIn.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = RPTDAPlugIn.m; path = RPTDAPlugIn/RPTDAPlugIn.m; sourceTree = "<group>"; };
 		8210FE491B451F68004E2BB5 /* RPTDAPlugIn.bundle */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = RPTDAPlugIn.bundle; sourceTree = BUILT_PRODUCTS_DIR; };
-		8210FE4A1B451F68004E2BB5 /* RPTDAPlugIn-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "RPTDAPlugIn-Info.plist"; sourceTree = "<group>"; };
+		8210FE4A1B451F68004E2BB5 /* RPTDAPlugIn-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; name = "RPTDAPlugIn-Info.plist"; path = "RPTDAPlugIn/RPTDAPlugIn-Info.plist"; sourceTree = "<group>"; };
 		8210FE4E1B451FC3004E2BB5 /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = System/Library/Frameworks/Cocoa.framework; sourceTree = SDKROOT; };
 		8210FE501B451FE6004E2BB5 /* Admin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Admin.framework; path = /System/Library/PrivateFrameworks/Admin.framework; sourceTree = "<absolute>"; };
 		8210FE521B451FF6004E2BB5 /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = System/Library/Frameworks/PreferencePanes.framework; sourceTree = SDKROOT; };
@@ -397,7 +397,7 @@
 				GCC_OPTIMIZATION_LEVEL = 0;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "RPTDAPlugIn-Info.plist";
+				INFOPLIST_FILE = "RPTDAPlugIn/RPTDAPlugIn-Info.plist";
 				INSTALL_PATH = /tmp;
 				OTHER_LDFLAGS = (
 					"-framework",
@@ -425,7 +425,7 @@
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
-				INFOPLIST_FILE = "RPTDAPlugIn-Info.plist";
+				INFOPLIST_FILE = "RPTDAPlugIn/RPTDAPlugIn-Info.plist";
 				INSTALL_PATH = /tmp;
 				MACH_O_TYPE = mh_bundle;
 				OTHER_LDFLAGS = (
