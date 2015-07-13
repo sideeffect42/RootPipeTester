@@ -24,6 +24,11 @@
 
 @implementation RootPipeDelegate
 
+typedef enum {
+	kRPTTestFinishedVulnerable,
+	kRPTTestFinishedSecure
+} RPTTestFinishedAlertSheetMode;
+
 - (id)init {
 	if ((self = [super init])) {
 		_rpTest = [[RootPipeTest alloc] init];
@@ -299,30 +304,25 @@ phoenixend:
 	// Test finished
 	printf("\n--------------\nTest finished.\n\n");
 	NSString *testResultText = @"";
-	void (*beginAlertSheet)(NSString *, NSString *, NSString *, NSString *, NSWindow *, id, SEL, SEL, void *, NSString *, ...) = NULL;
+	RPTTestFinishedAlertSheetMode sheetMode = 0;
 	if (vulnerableWithoutAuth || vulnerableWithAuth || vulnerableWithoutPhoenixAuth || vulnerableWithPhoenixAuth) {
 		testResultText = @"Your system appears to be attackable. Please read the output above for detailed information.";
-		beginAlertSheet = NSBeginCriticalAlertSheet;
+		sheetMode = kRPTTestFinishedVulnerable;
 	} else {
 		testResultText = @"Your system appears to be secure.";
-		beginAlertSheet = NSBeginInformationalAlertSheet;
+		sheetMode = kRPTTestFinishedSecure;
 	}
 
+	// Print test finished user information
 	printf("%s\n", [testResultText UTF8String]);
 
-	if (beginAlertSheet)
-	beginAlertSheet(
-		@"Test Result", 
-		@"OK", 
-		nil, 
-		nil, 
-		mainWindow, 
-		nil, 
-		NULL, 
-		NULL, 
-		NULL, 
-		testResultText
-	);
+	SEL const displayFinishSheetSel = @selector(displayTestFinishedAlertSheet:mode:);
+	NSInvocation *sheetInv = [NSInvocation invocationWithMethodSignature:[self methodSignatureForSelector:displayFinishSheetSel]];
+	[sheetInv setSelector:displayFinishSheetSel];
+	[sheetInv setArgument:&testResultText atIndex:2];
+	[sheetInv setArgument:&sheetMode atIndex:3];
+	[sheetInv performSelectorOnMainThread:@selector(invokeWithTarget:) withObject:self waitUntilDone:NO];
+	
 	
 	[[NSNotificationCenter defaultCenter] postNotificationName:RootPipeTestFinished object:NSApp];
 
@@ -335,6 +335,35 @@ phoenixend:
 	close(oldStdErr);
 	
 	[pool release];
+}
+
+- (void)displayTestFinishedAlertSheet:(NSString *)aMessage mode:(RPTTestFinishedAlertSheetMode)aMode {
+	void (*beginAlertSheet)(NSString *, NSString *, NSString *, NSString *, NSWindow *, id, SEL, SEL, void *, NSString *, ...) = NULL;
+	switch (aMode) {
+		case kRPTTestFinishedSecure:
+			beginAlertSheet = &NSBeginInformationalAlertSheet;
+			break;
+		case kRPTTestFinishedVulnerable:
+			beginAlertSheet = &NSBeginCriticalAlertSheet;
+			break;
+		default:
+			return;
+	}
+	
+	if (beginAlertSheet) {
+		beginAlertSheet(
+			@"Test Result",
+			@"OK",
+			nil,
+			nil,
+			mainWindow,
+			nil,
+			NULL,
+			NULL,
+			NULL,
+			aMessage
+		);
+	}
 }
 
 - (void)updateTextView:(NSNotification *)notification {
