@@ -163,13 +163,16 @@
 
 	printf("\n\n");
 
-	static NSString * const kRPTTempDir = @"/private/tmp/RootPipeTester";
-	static NSString * const kDirAccessPath = @"/Applications/Utilities/Directory Access.app";
-	static NSString * const kDirUtilPathOld = @"/Applications/Utilities/Directory Utility.app";
-	static NSString * const kDirUtilPathNew = @"/System/Library/CoreServices/Applications/Directory Utility.app";
-	static NSString * const kDirAccessPathDest = @"/private/tmp/RootPipeTester/Directory Access.app"; // path there Directory Access should be copied to
+	#define DIRACCESS_PATHS_LENGTH 4
+	static NSString * const kDirAccessPaths[DIRACCESS_PATHS_LENGTH] = {
+		@"/Applications/Utilities/Directory Access.app", // 10.4 or earlier
+		@"/Applications/Utilities/Directory Utility.app", // 10.5
+		@"/System/Library/CoreServices/Directory Utility.app", // 10.6 - 10.9
+		@"/System/Library/CoreServices/Applications/Directory Utility.app" // 10.10 or later
+	};
 	
-	const char *dirAccessName = "Directory Access";
+	static NSString * const kRPTTempDir        = @"/private/tmp/RootPipeTester";
+	static NSString * const kDirAccessPathDest = @"/private/tmp/RootPipeTester/Directory Access.app"; // path where Directory Access should be copied to
 	
 	// Prepare temp directory
 	BOOL tempFileIsDir = NO;
@@ -183,16 +186,18 @@
 
 	// Copy Directory Access to temp
 	BOOL dirAccessCopySuccess = NO;
+	const char *dirAccessName = "";
+	for (short i = 0; i < DIRACCESS_PATHS_LENGTH; i++) {
+		NSString *pathToCheck = kDirAccessPaths[i];
+		if ([fm fileExistsAtPath:pathToCheck] && [fm isExecutableFileAtPath:pathToCheck]) {
+			dirAccessCopySuccess = [fm copyPath:pathToCheck toPath:kDirAccessPathDest handler:nil];
+			dirAccessName = [[[pathToCheck lastPathComponent] stringByDeletingPathExtension] UTF8String];
+		}
+	}
 	
-	if ([fm fileExistsAtPath:kDirUtilPathNew] && [fm isExecutableFileAtPath:kDirUtilPathNew]) {
-		dirAccessCopySuccess = [fm copyPath:kDirUtilPathNew toPath:kDirAccessPathDest handler:nil];
-	} else if ([fm fileExistsAtPath:kDirUtilPathOld] && [fm isExecutableFileAtPath:kDirUtilPathOld]) {
-		dirAccessCopySuccess = [fm copyPath:kDirUtilPathOld toPath:kDirAccessPathDest handler:nil];
-	} else if ([fm fileExistsAtPath:kDirAccessPath] && [fm isExecutableFileAtPath:kDirAccessPath]) {
-		dirAccessCopySuccess = [fm copyPath:kDirAccessPath toPath:kDirAccessPathDest handler:nil];
-		dirAccessName = "Directory Access";
-	} else {
-		printf("Could not find the \"%s\" application on your system.\n", dirAccessName);
+    if (!dirAccessCopySuccess) {
+		printf("Could not run Phoenix test because the \"%s\" application could not be found on your system.\n", dirAccessName);
+		goto phoenixend;
 	}
 	
 	// Inject RPTDABundle
@@ -213,6 +218,7 @@
 	 && [[NSWorkspace sharedWorkspace] launchApplication:kDirAccessPathDest showIcon:NO autolaunch:NO]
 	)) {
 		printf("Could not launch %s from \"%s\".\n", dirAccessName, [kDirAccessPathDest UTF8String]);
+		goto phoenixend;
 	}
 	
 	// Get Remote Connection
