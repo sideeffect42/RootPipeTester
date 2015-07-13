@@ -486,9 +486,9 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CURRENT_PROJECT_VERSION = 2.0b1;
 				GCC_C_LANGUAGE_STANDARD = c99;
 				GCC_OPTIMIZATION_LEVEL = 0;
-				GCC_VERSION = 4.0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -503,6 +503,7 @@
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PRODUCT_NAME = "RootPipe Tester";
 				SDKROOT = macosx10.4;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Debug;
 		};
@@ -510,8 +511,8 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ARCHS = "$(ARCHS_STANDARD_32_BIT)";
+				CURRENT_PROJECT_VERSION = 2.0b1;
 				GCC_C_LANGUAGE_STANDARD = c99;
-				GCC_VERSION = 4.0;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
 				GCC_WARN_ABOUT_MISSING_NEWLINE = YES;
 				GCC_WARN_ABOUT_RETURN_TYPE = YES;
@@ -526,6 +527,7 @@
 				PLIST_FILE_OUTPUT_FORMAT = xml;
 				PRODUCT_NAME = "RootPipe Tester";
 				SDKROOT = macosx10.4;
+				VERSIONING_SYSTEM = "apple-generic";
 			};
 			name = Release;
 		};
