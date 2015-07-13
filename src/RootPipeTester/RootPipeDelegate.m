@@ -253,10 +253,10 @@ typedef enum {
 	printf("\n");
 	
 	// [phoenix - nil auth]
-	BOOL vulnerableWithoutPhoenixAuth = NO;
+	NSNumber *vulnerableWithoutPhoenixAuth = [NSNumber numberWithBool:NO];
 	NS_DURING
-		vulnerableWithoutPhoenixAuth = [phoenixConn runTestWithAuthorization:NO fileAttributes:&fileAttributes throughShim:&pipe]; // phoenix nil auth test
-		if (vulnerableWithoutPhoenixAuth) {
+        [phoenixConn runTestWithAuthorization:NO fileAttributes:&fileAttributes throughShim:&pipe testResult:&vulnerableWithoutPhoenixAuth]; // phoenix nil auth test
+		if ([vulnerableWithoutPhoenixAuth boolValue]) {
 			printf("\nYour system is vulnerable against Phoenix using nil authorization! (probably 10.9 - 10.10.3)\n");
 		} else {
 			printf("\nYour system is not vulnerable against Phoenix using nil authorization.\n");
@@ -272,10 +272,10 @@ typedef enum {
 	printf("\n");
 	
 	// [phoenix - user auth]
-	BOOL vulnerableWithPhoenixAuth = NO;
+	NSNumber *vulnerableWithPhoenixAuth = [NSNumber numberWithBool:NO];
 	NS_DURING
-		vulnerableWithPhoenixAuth = [phoenixConn runTestWithAuthorization:YES fileAttributes:&fileAttributes throughShim:&pipe]; // phoenix user auth test
-		if (vulnerableWithPhoenixAuth) {
+        [phoenixConn runTestWithAuthorization:YES fileAttributes:&fileAttributes throughShim:&pipe testResult:&vulnerableWithPhoenixAuth]; // phoenix user auth test
+		if ([vulnerableWithPhoenixAuth boolValue]) {
 			printf("\nYour system is vulnerable against Phoenix using user authorization. (probably 10.10.3 or older)\n");
 		} else {
 			printf("\nYour system is not vulnerable against Phoenix using user authorization.\n");
@@ -305,7 +305,7 @@ phoenixend:
 	printf("\n--------------\nTest finished.\n\n");
 	NSString *testResultText = @"";
 	RPTTestFinishedAlertSheetMode sheetMode = 0;
-	if (vulnerableWithoutAuth || vulnerableWithAuth || vulnerableWithoutPhoenixAuth || vulnerableWithPhoenixAuth) {
+	if (vulnerableWithoutAuth || vulnerableWithAuth || [vulnerableWithoutPhoenixAuth boolValue] || [vulnerableWithPhoenixAuth boolValue]) {
 		testResultText = @"Your system appears to be attackable. Please read the output above for detailed information.";
 		sheetMode = kRPTTestFinishedVulnerable;
 	} else {

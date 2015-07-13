@@ -37,7 +37,7 @@
 // no init available. This class will initialise itself.
 
 - (RootPipeTest *)test;
-- (BOOL)runTestWithAuthorization:(BOOL)useAuth fileAttributes:(NSDictionary **)fileAttr throughShim:(NSPipe **)pipeRef;
+- (void)runTestWithAuthorization:(BOOL)useAuth fileAttributes:(NSDictionary **)fileAttr throughShim:(NSPipe **)pipeRef testResult:(NSNumber **)testResult;
 + (void)finishTesting;
 - (void)finishTesting; // same as +finishTesting
 

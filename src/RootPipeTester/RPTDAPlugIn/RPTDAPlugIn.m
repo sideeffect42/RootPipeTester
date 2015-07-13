@@ -39,9 +39,12 @@ static NSTimer *timeoutTimer = nil;
 	NSLog(@"Initialising RPTDAPlugIn...");
 	
 	// Hide Application
-	ProcessSerialNumber psn;
-	GetCurrentProcess(&psn);
-	//ShowHideProcess(&psn, false);
+    /*if (NSClassFromString(@"NSRunningApplication")) {
+        [[NSRunningApplication currentApplication] hide];
+    } else {
+        ProcessSerialNumber psn = { 0, kCurrentProcess };
+        ShowHideProcess(&psn, false);
+    }*/
 	
 	// Initialise statics
 	timerLock = [NSRecursiveLock new];
@@ -81,7 +84,7 @@ static NSTimer *timeoutTimer = nil;
 	// Instantiate new PlugIn
 	if ((self = [super init])) {
 		// Initialise timer
-		timerLock = [NSLock new];
+		timerLock = [NSRecursiveLock new];
 		[[self class] resetTimeout];
 		
 		// Initialise ivars
@@ -97,8 +100,8 @@ static NSTimer *timeoutTimer = nil;
 		[[_localPipe fileHandleForReading] performSelectorOnMainThread:@selector(waitForDataInBackgroundAndNotify) withObject:nil waitUntilDone:NO];
 		
 		// Initialise connection
-		_connection = [NSConnection defaultConnection];
-		[_connection registerName:@"RPTDAPlugIn-Connection"];
+		_connection = [[NSConnection alloc] init];
+        [_connection registerName:@"RPTDAPlugIn-Connection"];
 		[_connection setRootObject:self];
 	}
 	return (plugin = self);
@@ -134,21 +137,19 @@ static NSTimer *timeoutTimer = nil;
 	return _rpTest;
 }
 
-- (BOOL)runTestWithAuthorization:(BOOL)useAuth fileAttributes:(NSDictionary **)fileAttr throughShim:(NSPipe **)pipeRef {
-	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
+- (void)runTestWithAuthorization:(BOOL)useAuth fileAttributes:(NSDictionary **)fileAttr throughShim:(NSPipe **)pipeRef testResult:(NSNumber **)testResult {
 	[[self class] pauseTimeout];
 	
-	if (pipeRef) _proxyPipe = (*pipeRef);
+	_proxyPipe = (pipeRef ? (*pipeRef) : nil);
 	
-	BOOL testResult = [_rpTest runTestWithAuthorization:useAuth fileAttributes:fileAttr];
+	BOOL res = [_rpTest runTestWithAuthorization:useAuth fileAttributes:fileAttr];
+	if (testResult) *testResult = [[NSNumber numberWithBool:res] retain];
 
 	printf(" ");
 	[[NSNotificationCenter defaultCenter] postNotificationName:NSFileHandleDataAvailableNotification object:[_localPipe fileHandleForReading] userInfo:nil];
 	printf(" ");
 
 	[[self class] resetTimeout];
-	[pool release];
-	return testResult;
 }
 
 + (void)finishTesting {
@@ -169,6 +170,8 @@ static NSTimer *timeoutTimer = nil;
 - (void)dealloc {
 	[_rpTest release];
 	[_localPipe release];
+    [[_connection sendPort] invalidate];
+    [[_connection receivePort] invalidate];
 	[_connection invalidate];
 	[_connection release];
 	[super dealloc];
