@@ -164,10 +164,12 @@
 	printf("\n\n");
 
 	static NSString * const kRPTTempDir = @"/private/tmp/RootPipeTester";
-	static NSString * const kDirUtilPathJaguar = @"/Applications/Utilities/Directory Access.app"; // TODO: verify if only Jaguar
+	static NSString * const kDirAccessPath = @"/Applications/Utilities/Directory Access.app";
 	static NSString * const kDirUtilPathOld = @"/Applications/Utilities/Directory Utility.app";
 	static NSString * const kDirUtilPathNew = @"/System/Library/CoreServices/Applications/Directory Utility.app";
 	static NSString * const kDirAccessPathDest = @"/private/tmp/RootPipeTester/Directory Access.app"; // path there Directory Access should be copied to
+	
+	const char *dirAccessName = "Directory Access";
 	
 	// Prepare temp directory
 	BOOL tempFileIsDir = NO;
@@ -186,10 +188,11 @@
 		dirAccessCopySuccess = [fm copyPath:kDirUtilPathNew toPath:kDirAccessPathDest handler:nil];
 	} else if ([fm fileExistsAtPath:kDirUtilPathOld] && [fm isExecutableFileAtPath:kDirUtilPathOld]) {
 		dirAccessCopySuccess = [fm copyPath:kDirUtilPathOld toPath:kDirAccessPathDest handler:nil];
-	} else if ([fm fileExistsAtPath:kDirUtilPathJaguar] && [fm isExecutableFileAtPath:kDirUtilPathJaguar]) {
-		dirAccessCopySuccess = [fm copyPath:kDirUtilPathJaguar toPath:kDirAccessPathDest handler:nil];
+	} else if ([fm fileExistsAtPath:kDirAccessPath] && [fm isExecutableFileAtPath:kDirAccessPath]) {
+		dirAccessCopySuccess = [fm copyPath:kDirAccessPath toPath:kDirAccessPathDest handler:nil];
+		dirAccessName = "Directory Access";
 	} else {
-		printf("Could not find the \"Directory Access\" application on your system.\n");
+		printf("Could not find the \"%s\" application on your system.\n", dirAccessName);
 	}
 	
 	// Inject RPTDABundle
@@ -209,14 +212,14 @@
 	 && [fm isExecutableFileAtPath:kDirAccessPathDest]
 	 && [[NSWorkspace sharedWorkspace] launchApplication:kDirAccessPathDest showIcon:NO autolaunch:NO]
 	)) {
-		printf("Could not launch Directory Access from \"%s\".\n", [kDirAccessPathDest UTF8String]);
+		printf("Could not launch %s from \"%s\".\n", dirAccessName, [kDirAccessPathDest UTF8String]);
 	}
 	
 	// Get Remote Connection
 	#define HELPER_CONN_TIMEOUT 40 // seconds
 	#define HELPER_CONN_INTERVAL 250000 // microseconds
 	#define HELPER_CONN_TRIES (HELPER_CONN_TIMEOUT*1000000/HELPER_CONN_INTERVAL)
-	printf("Waiting for connection to Directory Access...\n");
+	printf("Waiting for connection to %s...\n", dirAccessName);
 	RPTDAPlugIn /*NSDistantObject*/ *phoenixConn = nil;
 	short i = 0;
 	NS_DURING
@@ -225,22 +228,23 @@
 			usleep(HELPER_CONN_INTERVAL);
 		}
 	NS_HANDLER
-		fprintf(stderr, "\nAn error occurred while waiting for a connection to Directory Access: %s\n", [[localException description] UTF8String]);
+		fprintf(stderr, "\nAn error occurred while waiting for a connection to %s: %s\n", dirAccessName, [[localException description] UTF8String]);
 	NS_ENDHANDLER
 
 	printf("\n");
 	
 	short connDelay = (i*HELPER_CONN_INTERVAL/1000000);
 	if (!phoenixConn) {
-		printf("Could not get a connection to Directory Access after %d seconds.\n", connDelay);
+		printf("Could not get a connection to %s after %d seconds.\n", dirAccessName, connDelay);
 		goto phoenixend;
-	} else printf("Got a connection to Directory Access after %d seconds.\n", connDelay);
+	} else printf("Got a connection to %s after %d seconds.\n", dirAccessName, connDelay);
 	
 	printf("\n");
 	
 	// [phoenix - nil auth]
+	BOOL vulnerableWithoutPhoenixAuth = NO;
 	NS_DURING
-		BOOL vulnerableWithoutPhoenixAuth = [phoenixConn runTestWithAuthorization:NO fileAttributes:&fileAttributes throughShim:&pipe]; // phoenix nil auth test
+		vulnerableWithoutPhoenixAuth = [phoenixConn runTestWithAuthorization:NO fileAttributes:&fileAttributes throughShim:&pipe]; // phoenix nil auth test
 		if (vulnerableWithoutPhoenixAuth) {
 			printf("\nYour system is vulnerable against Phoenix using nil authorization! (probably 10.9 - 10.10.3)\n");
 		} else {
@@ -257,8 +261,9 @@
 	printf("\n");
 	
 	// [phoenix - user auth]
+	BOOL vulnerableWithPhoenixAuth = NO;
 	NS_DURING
-		BOOL vulnerableWithPhoenixAuth = [phoenixConn runTestWithAuthorization:YES fileAttributes:&fileAttributes throughShim:&pipe]; // phoenix user auth test
+		vulnerableWithPhoenixAuth = [phoenixConn runTestWithAuthorization:YES fileAttributes:&fileAttributes throughShim:&pipe]; // phoenix user auth test
 		if (vulnerableWithPhoenixAuth) {
 			printf("\nYour system is vulnerable against Phoenix using user authorization. (probably 10.10.3 or older)\n");
 		} else {
@@ -271,9 +276,10 @@
 		fprintf(stderr, "An error occurred while testing against Phoenix using user authorization: %s\n", [[localException description] UTF8String]);
 	NS_ENDHANDLER
 	// [/phoenix - user auth]
-		
+	
 	NS_DURING
-		[usedFiles unionSet:[[phoenixConn test] usedTestFiles]];
+		NSSet *phoenixUsed = [[phoenixConn test] usedTestFiles];
+		[usedFiles unionSet:phoenixUsed];
 		[phoenixConn performSelector:@selector(finishTesting)];
 	NS_HANDLER
 		fprintf(stderr, "An error occurred while trying to finish Phoenix test: %s\n", [[localException description] UTF8String]);
@@ -282,10 +288,36 @@
 phoenixend:
 	// [/phoenix test]
 	
-	printf("\nTried to write the following files: %s\n", [[[usedFiles allObjects] descriptionWithLocale:nil indent:1] UTF8String]);
+	printf("\nTried to write the following files: %s\n", [[[[usedFiles allObjects] sortedArrayUsingSelector:@selector(caseInsensitiveCompare:)] descriptionWithLocale:nil indent:1] UTF8String]);
 	
 	// Test finished
-	printf("\nTest finished.\n");
+	printf("\n--------------\nTest finished.\n\n");
+	NSString *testResultText = @"";
+	void (*beginAlertSheet)(NSString *, NSString *, NSString *, NSString *, NSWindow *, id, SEL, SEL, void *, NSString *, ...) = NULL;
+	if (vulnerableWithoutAuth || vulnerableWithAuth || vulnerableWithoutPhoenixAuth || vulnerableWithPhoenixAuth) {
+		testResultText = @"Your system appears to be attackable. Please read the output above for detailed information.";
+		beginAlertSheet = NSBeginCriticalAlertSheet;
+	} else {
+		testResultText = @"Your system appears to be secure.";
+		beginAlertSheet = NSBeginInformationalAlertSheet;
+	}
+
+	printf("%s\n", [testResultText UTF8String]);
+
+	if (beginAlertSheet)
+	beginAlertSheet(
+		@"Test Result", 
+		@"OK", 
+		nil, 
+		nil, 
+		mainWindow, 
+		nil, 
+		NULL, 
+		NULL, 
+		NULL, 
+		testResultText
+	);
+	
 	[[NSNotificationCenter defaultCenter] postNotificationName:RootPipeTestFinished object:NSApp];
 
 	// Restore stdout and stderr
@@ -331,12 +363,21 @@ phoenixend:
 	}
 	
 	[attributedString initWithString:str];
-	[str release];	
+	[str release];
 	
 	if ([attributedString length] < 1) return; // nothing to fill into TextView
 	
+	// Smart Scrolling
+    BOOL shouldScrollToBottom = (NSMaxY([textOutput visibleRect]) == NSMaxY([textOutput bounds]));
+
 	// Asynchronously update TextView on the GUI thread.
-	[[textOutput textStorage] performSelectorOnMainThread:@selector(appendAttributedString:) withObject:attributedString waitUntilDone:NO];
+	// todo [[textOutput textStorage] performSelectorOnMainThread:@selector(appendAttributedString:) withObject:attributedString waitUntilDone:NO];
+	[[textOutput textStorage] appendAttributedString:attributedString];
+
+    if (shouldScrollToBottom) {
+		// Scroll to end of the textview contents
+		[textOutput scrollRangeToVisible:NSMakeRange([[textOutput string] length], 0)];
+	}
 	
 	[pool release];
 }

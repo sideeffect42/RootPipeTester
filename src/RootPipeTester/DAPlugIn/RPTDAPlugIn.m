@@ -32,7 +32,7 @@
 
 @implementation RPTDAPlugIn
 static RPTDAPlugIn *plugin = nil;
-static NSLock *timerLock = nil;
+static NSRecursiveLock *timerLock = nil;
 static NSTimer *timeoutTimer = nil;
 
 + (void)initialize {
@@ -41,10 +41,11 @@ static NSTimer *timeoutTimer = nil;
 	// Hide Application
 	ProcessSerialNumber psn;
 	GetCurrentProcess(&psn);
-	ShowHideProcess(&psn, false);
+	//ShowHideProcess(&psn, false);
 	
 	// Initialise statics
-	timerLock = [NSLock new];
+	timerLock = [NSRecursiveLock new];
+	[self resetTimeout];
 	plugin = [[RPTDAPlugIn alloc] privateInit]; // should initialise timeoutTimer
 }
 
@@ -99,8 +100,6 @@ static NSTimer *timeoutTimer = nil;
 		_connection = [NSConnection defaultConnection];
 		[_connection registerName:@"RPTDAPlugIn-Connection"];
 		[_connection setRootObject:self];
-		
-		[self runTestWithAuthorization:YES fileAttributes:nil throughShim:nil];
 	}
 	return (plugin = self);
 }
@@ -145,6 +144,7 @@ static NSTimer *timeoutTimer = nil;
 
 	printf(" ");
 	[[NSNotificationCenter defaultCenter] postNotificationName:NSFileHandleDataAvailableNotification object:[_localPipe fileHandleForReading] userInfo:nil];
+	printf(" ");
 
 	[[self class] resetTimeout];
 	[pool release];
