@@ -100,6 +100,7 @@ typedef enum {
 }
 
 - (void)initiateAutomatedTestingRunnable { // should be run in a separate thread to avoid stalling
+	short i;
 	NSAutoreleasePool *pool = [[NSAutoreleasePool alloc] init];
 	NSFileManager *fm = [NSFileManager defaultManager];
 	NSDictionary *fileAttributes = nil;
@@ -192,7 +193,7 @@ typedef enum {
 	// Copy Directory Access to temp
 	BOOL dirAccessCopySuccess = NO;
 	const char *dirAccessName = "";
-	for (short i = 0; i < DIRACCESS_PATHS_LENGTH; i++) {
+	for (i = 0; i < DIRACCESS_PATHS_LENGTH; i++) {
 		NSString *pathToCheck = kDirAccessPaths[i];
 		if ([fm fileExistsAtPath:pathToCheck] && [fm isExecutableFileAtPath:pathToCheck]) {
 			dirAccessCopySuccess = [fm copyPath:pathToCheck toPath:kDirAccessPathDest handler:nil];
@@ -232,7 +233,7 @@ typedef enum {
 	#define HELPER_CONN_TRIES (HELPER_CONN_TIMEOUT*1000000/HELPER_CONN_INTERVAL)
 	printf("Waiting for connection to %s...\n", dirAccessName);
 	RPTDAPlugIn /*NSDistantObject*/ *phoenixConn = nil;
-	short i = 0;
+	i = 0; // reset i
 	NS_DURING
 		while (!(phoenixConn = (RPTDAPlugIn *)[NSConnection rootProxyForConnectionWithRegisteredName:@"RPTDAPlugIn-Connection" host:nil]) && (++i) < HELPER_CONN_TRIES) {
 			printf(".");

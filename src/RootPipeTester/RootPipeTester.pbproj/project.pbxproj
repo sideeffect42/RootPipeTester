@@ -117,6 +117,7 @@
 		19C28FACFE9D520D11CA2CBB = {
 			children = (
 				17587328FF379C6511CA2CBB,
+				82E718A61B62D66D00A8000E,
 			);
 			isa = PBXGroup;
 			name = Products;
@@ -143,10 +144,12 @@
 			projectDirPath = "";
 			targets = (
 				29B97326FDCFA39411CA2CEA,
+				82E718A51B62D66D00A8000E,
 			);
 		};
 		29B97314FDCFA39411CA2CEA = {
 			children = (
+				82E718951B62D5B000A8000E,
 				080E96DDFE201D6D7F000001,
 				29B97315FDCFA39411CA2CEA,
 				29B97317FDCFA39411CA2CEA,
@@ -230,6 +233,8 @@
 				29B9732DFDCFA39411CA2CEA,
 			);
 			buildSettings = {
+				CURRENT_PROJECT_VERSION = 2.0b1;
+				DEVELOPMENT_PLIST_FILE = "";
 				EXECUTABLE_NAME = RootPipeTester;
 				FRAMEWORK_SEARCH_PATHS = "\"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"";
 				HEADER_SEARCH_PATHS = "";
@@ -242,10 +247,13 @@
 				PREFIX_HEADER = RootPipeTester_Prefix.pch;
 				PRODUCT_NAME = RootPipeTester;
 				SECTORDER_FLAGS = "";
+				VERSIONING_SYSTEM = "apple-generic";
 				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
 				WRAPPER_EXTENSION = app;
+				_DEVELOPMENT_PLIST_FILE = "";
 			};
 			dependencies = (
+				82E718A71B62D66D00A8000E,
 			);
 			isa = PBXApplicationTarget;
 			name = RootPipeTester;
@@ -273,7 +281,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>1.0.3-legacy</string>
+	<string>2.0b1</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.2.8</string>
 	<key>NSMainNibFile</key>
@@ -301,6 +309,7 @@
 				080E96DCFE201CFB7F000001,
 				089C165EFE840E0CC02AAC07,
 				8278EAF81AFCF61B00A8000E,
+				82E718A81B62D66D00A8000E,
 			);
 			isa = PBXResourcesBuildPhase;
 			runOnlyForDeploymentPostprocessing = 0;
@@ -496,6 +505,263 @@
 		};
 		8278EAF81AFCF61B00A8000E = {
 			fileRef = 8278EAF71AFCF61B00A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		82E718951B62D5B000A8000E = {
+			children = (
+				82E718961B62D5BC00A8000E,
+				82E718BB1B62D84A00A8000E,
+				82E718981B62D5CA00A8000E,
+			);
+			isa = PBXGroup;
+			name = RPTDAPlugIn;
+			refType = 4;
+		};
+		82E718961B62D5BC00A8000E = {
+			children = (
+				82E7189A1B62D5EF00A8000E,
+				82E718991B62D5EF00A8000E,
+			);
+			isa = PBXGroup;
+			name = Classes;
+			refType = 4;
+		};
+		82E718981B62D5CA00A8000E = {
+			children = (
+				82E7189F1B62D64700A8000E,
+				82E718AC1B62D6CF00A8000E,
+				82E718AE1B62D71800A8000E,
+				82E718B01B62D72700A8000E,
+			);
+			isa = PBXGroup;
+			name = Frameworks;
+			refType = 4;
+		};
+		82E718991B62D5EF00A8000E = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = RPTDAPlugIn.h;
+			path = RPTDAPlugIn/RPTDAPlugIn.h;
+			refType = 4;
+		};
+		82E7189A1B62D5EF00A8000E = {
+			fileEncoding = 4;
+			isa = PBXFileReference;
+			name = RPTDAPlugIn.m;
+			path = RPTDAPlugIn/RPTDAPlugIn.m;
+			refType = 4;
+		};
+		82E7189F1B62D64700A8000E = {
+			isa = PBXFrameworkReference;
+			name = Cocoa.framework;
+			path = /System/Library/Frameworks/Cocoa.framework;
+			refType = 0;
+		};
+		82E718A01B62D66D00A8000E = {
+			buildActionMask = 2147483647;
+			files = (
+				82E718AA1B62D67700A8000E,
+			);
+			isa = PBXHeadersBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82E718A11B62D66D00A8000E = {
+			buildActionMask = 2147483647;
+			files = (
+				82E718BD1B62D8A500A8000E,
+			);
+			isa = PBXResourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82E718A21B62D66D00A8000E = {
+			buildActionMask = 2147483647;
+			files = (
+				82E718A91B62D67700A8000E,
+				82E718BE1B62DA6700A8000E,
+				82E718BF1B62DA6D00A8000E,
+			);
+			isa = PBXSourcesBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82E718A31B62D66D00A8000E = {
+			buildActionMask = 2147483647;
+			files = (
+				82E718AB1B62D67800A8000E,
+				82E718AD1B62D6CF00A8000E,
+				82E718AF1B62D71800A8000E,
+				82E718B11B62D72700A8000E,
+			);
+			isa = PBXFrameworksBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82E718A41B62D66D00A8000E = {
+			buildActionMask = 2147483647;
+			files = (
+			);
+			isa = PBXRezBuildPhase;
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		82E718A51B62D66D00A8000E = {
+			buildPhases = (
+				82E718A01B62D66D00A8000E,
+				82E718A11B62D66D00A8000E,
+				82E718A21B62D66D00A8000E,
+				82E718A31B62D66D00A8000E,
+				82E718A41B62D66D00A8000E,
+			);
+			buildSettings = {
+				CURRENT_PROJECT_VERSION = 2.0b1;
+				FRAMEWORK_SEARCH_PATHS = "\"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"";
+				MACOSX_DEPLOYMENT_TARGET = 10.2;
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				OTHER_REZFLAGS = "";
+				PRECOMPILE_PREFIX_HEADER = YES;
+				PREFIX_HEADER = RPTDAPlugIn/RPTDAPlugIn_Prefix.pch;
+				PRODUCT_NAME = RPTDAPlugIn;
+				SECTORDER_FLAGS = "";
+				VERSIONING_SYSTEM = "apple-generic";
+				WARNING_CFLAGS = "-Wmost -Wno-four-char-constants -Wno-unknown-pragmas";
+				WRAPPER_EXTENSION = bundle;
+			};
+			dependencies = (
+			);
+			isa = PBXBundleTarget;
+			name = RPTDAPlugIn;
+			productInstallPath = "$(USER_LIBRARY_DIR)/Bundles";
+			productName = RPTDaPlugIn;
+			productReference = 82E718A61B62D66D00A8000E;
+			productSettingsXML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>
+<!DOCTYPE plist PUBLIC \"-//Apple Computer//DTD PLIST 1.0//EN\" \"http://www.apple.com/DTDs/PropertyList-1.0.dtd\">
+<plist version=\"1.0\">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>English</string>
+	<key>CFBundleExecutable</key>
+	<string>RPTDAPlugIn</string>
+	<key>CFBundleGetInfoString</key>
+	<string></string>
+	<key>CFBundleIconFile</key>
+	<string></string>
+	<key>CFBundleIdentifier</key>
+	<string>ch.maniswebdesign.RootPipeTester.RPTDAPlugIn</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string></string>
+	<key>CFBundlePackageType</key>
+	<string>BNDL</string>
+	<key>CFBundleShortVersionString</key>
+	<string></string>
+	<key>CFBundleSignature</key>
+	<string>????</string>
+	<key>CFBundleVersion</key>
+	<string>2.0b1</string>
+	<key>NSPrincipalClass</key>
+	<string>RPTDAPlugIn</string>
+</dict>
+</plist>
+";
+		};
+		82E718A61B62D66D00A8000E = {
+			isa = PBXBundleReference;
+			path = RPTDAPlugIn.bundle;
+			refType = 3;
+		};
+		82E718A71B62D66D00A8000E = {
+			isa = PBXTargetDependency;
+			target = 82E718A51B62D66D00A8000E;
+		};
+		82E718A81B62D66D00A8000E = {
+			fileRef = 82E718A61B62D66D00A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		82E718A91B62D67700A8000E = {
+			fileRef = 82E7189A1B62D5EF00A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		82E718AA1B62D67700A8000E = {
+			fileRef = 82E718991B62D5EF00A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		82E718AB1B62D67800A8000E = {
+			fileRef = 82E7189F1B62D64700A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		82E718AC1B62D6CF00A8000E = {
+			isa = PBXFrameworkReference;
+			name = Admin.framework;
+			path = /System/Library/PrivateFrameworks/Admin.framework;
+			refType = 0;
+		};
+		82E718AD1B62D6CF00A8000E = {
+			fileRef = 82E718AC1B62D6CF00A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		82E718AE1B62D71800A8000E = {
+			isa = PBXFrameworkReference;
+			name = PreferencePanes.framework;
+			path = /System/Library/Frameworks/PreferencePanes.framework;
+			refType = 0;
+		};
+		82E718AF1B62D71800A8000E = {
+			fileRef = 82E718AE1B62D71800A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		82E718B01B62D72700A8000E = {
+			isa = PBXFrameworkReference;
+			name = Security.framework;
+			path = /System/Library/Frameworks/Security.framework;
+			refType = 0;
+		};
+		82E718B11B62D72700A8000E = {
+			fileRef = 82E718B01B62D72700A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		82E718BB1B62D84A00A8000E = {
+			children = (
+				82E718BC1B62D8A500A8000E,
+			);
+			isa = PBXGroup;
+			name = "Other Sources";
+			refType = 4;
+		};
+		82E718BC1B62D8A500A8000E = {
+			isa = PBXFileReference;
+			name = RPTDAPlugIn_Prefix.pch;
+			path = RPTDAPlugIn/RPTDAPlugIn_Prefix.pch;
+			refType = 4;
+		};
+		82E718BD1B62D8A500A8000E = {
+			fileRef = 82E718BC1B62D8A500A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		82E718BE1B62DA6700A8000E = {
+			fileRef = 8277ACDC1AF5423F00A8000E;
+			isa = PBXBuildFile;
+			settings = {
+			};
+		};
+		82E718BF1B62DA6D00A8000E = {
+			fileRef = 8277ACD71AF5423600A8000E;
 			isa = PBXBuildFile;
 			settings = {
 			};

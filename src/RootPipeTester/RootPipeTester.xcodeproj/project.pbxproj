@@ -70,6 +70,7 @@
 		82B6ED351AD90AD600BFBAA2 /* Admin.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Admin.framework; path = /System/Library/PrivateFrameworks/Admin.framework; sourceTree = "<absolute>"; };
 		82B6ED381AD90AE500BFBAA2 /* SecurityFoundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = SecurityFoundation.framework; path = /System/Library/Frameworks/SecurityFoundation.framework; sourceTree = "<absolute>"; };
 		82B6EDD51AD91DC800BFBAA2 /* RootPipeDelegate.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RootPipeDelegate.m; sourceTree = "<group>"; };
+		82B6FE391B63A5A90059BAC4 /* RPTDAPlugIn_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = RPTDAPlugIn_Prefix.pch; path = RPTDAPlugIn/RPTDAPlugIn_Prefix.pch; sourceTree = "<group>"; };
 		82CA3F231ADEB02600938120 /* RootPipeTester.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; name = RootPipeTester.icns; path = Resources/RootPipeTester.icns; sourceTree = "<group>"; };
 		82EDC4351AFF4E5500E541DD /* PreferencePanes.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = PreferencePanes.framework; path = /System/Library/Frameworks/PreferencePanes.framework; sourceTree = "<absolute>"; };
 		8D1107310486CEB800E47090 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -196,6 +197,7 @@
 			isa = PBXGroup;
 			children = (
 				821F98851B4881EE00205B4F /* Classes */,
+				82B6FE381B63A5740059BAC4 /* Other Sources */,
 				821F98891B48822C00205B4F /* Resources */,
 				821F98861B48820300205B4F /* Frameworks */,
 			);
@@ -229,6 +231,14 @@
 				8210FE4A1B451F68004E2BB5 /* RPTDAPlugIn-Info.plist */,
 			);
 			name = Resources;
+			sourceTree = "<group>";
+		};
+		82B6FE381B63A5740059BAC4 /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				82B6FE391B63A5A90059BAC4 /* RPTDAPlugIn_Prefix.pch */,
+			);
+			name = "Other Sources";
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -424,7 +434,7 @@
 				GCC_ENABLE_FIX_AND_CONTINUE = NO;
 				GCC_MODEL_TUNING = G5;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
-				GCC_PREFIX_HEADER = "$(SYSTEM_LIBRARY_DIR)/Frameworks/AppKit.framework/Headers/AppKit.h";
+				GCC_PREFIX_HEADER = RPTDAPlugIn/RPTDAPlugIn_Prefix.pch;
 				INFOPLIST_FILE = "RPTDAPlugIn/RPTDAPlugIn-Info.plist";
 				INSTALL_PATH = /tmp;
 				MACH_O_TYPE = mh_bundle;
