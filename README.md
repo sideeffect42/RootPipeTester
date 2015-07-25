@@ -17,7 +17,7 @@
 	2. [Is it a backdoor?](#52-is-it-a-backdoor)
 
 ## 1. What is RootPipe Tester?
-RootPipe Tester is a small application that runs on your Mac (Mac OS X 10.2.8 or higher, both PowerPC and Intel) and tries to use the RootPipe Exploit ([CVE-2015-1130](http://www.cvedetails.com/cve/CVE-2015-1130/)) to produce a privilege escalation.
+RootPipe Tester is a small application that runs on your Mac (Mac OS X 10.2.8 or higher, both PowerPC and Intel) and tries to use both the RootPipe ([CVE-2015-1130](http://www.cvedetails.com/cve/CVE-2015-1130/)) and Phoenix ([CVE-2015-3673](http://www.cvedetails.com/cve/CVE-2015-3673/)) exploits to produce a privilege escalation.
 
 ## 2. Why should I use RootPipe Tester?
 ### Can't you just make a list of vulnerable Mac OS versions?

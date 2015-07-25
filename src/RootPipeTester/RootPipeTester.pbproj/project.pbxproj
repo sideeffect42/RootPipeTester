@@ -233,7 +233,7 @@
 				29B9732DFDCFA39411CA2CEA,
 			);
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 2.0b1;
+				CURRENT_PROJECT_VERSION = 2.0;
 				DEVELOPMENT_PLIST_FILE = "";
 				EXECUTABLE_NAME = RootPipeTester;
 				FRAMEWORK_SEARCH_PATHS = "\"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"";
@@ -281,7 +281,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2.0b1</string>
+	<string>2.0-legacy</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.2.8</string>
 	<key>LSMultipleInstancesProhibited</key>
@@ -614,7 +614,7 @@
 				82E718A41B62D66D00A8000E,
 			);
 			buildSettings = {
-				CURRENT_PROJECT_VERSION = 2.0b1;
+				CURRENT_PROJECT_VERSION = 2.0;
 				FRAMEWORK_SEARCH_PATHS = "\"$(SYSTEM_LIBRARY_DIR)/PrivateFrameworks\"";
 				MACOSX_DEPLOYMENT_TARGET = 10.2;
 				OTHER_CFLAGS = "";
@@ -660,7 +660,7 @@
 	<key>CFBundleSignature</key>
 	<string>????</string>
 	<key>CFBundleVersion</key>
-	<string>2.0b1</string>
+	<string>2.0-legacy</string>
 	<key>NSPrincipalClass</key>
 	<string>RPTDAPlugIn</string>
 </dict>
