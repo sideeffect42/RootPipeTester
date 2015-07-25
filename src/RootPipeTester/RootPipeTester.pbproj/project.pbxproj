@@ -284,6 +284,8 @@
 	<string>2.0b1</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.2.8</string>
+	<key>LSMultipleInstancesProhibited</key>
+	<true/>
 	<key>NSMainNibFile</key>
 	<string>MainMenu</string>
 	<key>NSPrincipalClass</key>

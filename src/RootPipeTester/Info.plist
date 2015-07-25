@@ -26,5 +26,7 @@
 	<string>NSApplication</string>
 	<key>LSMinimumSystemVersion</key>
 	<string>10.3.9</string>
+	<key>LSMultipleInstancesProhibited</key>
+	<true/>
 </dict>
 </plist>
